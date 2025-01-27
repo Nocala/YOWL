@@ -1,0 +1,29 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.0 # Remplacez par mariadb si vous préférez
+    container_name: yowl_database
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: yowl # Changez ce mot de passe !
+      MYSQL_DATABASE: yowl_database
+      MYSQL_USER: yowl_user
+      MYSQL_PASSWORD: yowl
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: yowl_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: yowl # Doit correspondre à celui défini pour le service "db"
+    ports:
+      - "8080:80"
+
+volumes:
+  db_data:
