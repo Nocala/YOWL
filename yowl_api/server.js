@@ -173,3 +173,125 @@ app.post('/login', (req, res) => {
     });
   });
 });
+
+
+
+
+
+//------------------------------------------
+// Routes posts textuels
+
+// Route pour récupérer tous les posts textuels
+app.get('/posts', (req, res) => {
+  const page = parseInt(req.query.page, 10) || 1; // Page par défaut : 1
+  const limit = parseInt(req.query.limit, 10) || 10; // Limite par défaut : 10 posts par requête
+  const offset = (page - 1) * limit;
+
+  const query = 'SELECT * FROM POSTS_TXT';
+  const queryParams = [limit, offset];
+
+  db.query(query, queryParams, (err, results) => {
+      if (err) {
+          console.error('Erreur lors de la récupération des posts:', err);
+          return res.status(500).json({ error: 'Erreur lors de la récupération des posts' });
+      }
+
+      // Vérifie s'il reste encore des posts à charger
+      const nextPage = results.length === limit ? page + 1 : null;
+
+      res.json({ posts: results, nextPage });
+  });
+});
+
+// Route pour récupérer un post textuel par son ID
+app.get('/posts/:id', (req, res) => {
+  const postId = req.params.id;
+
+  if (!postId) {
+      return res.status(400).json({ error: 'ID du post requis' });
+  }
+
+  const query = 'SELECT * FROM POSTS_TXT WHERE post_txt_id = ?';
+  db.query(query, [postId], (err, results) => {
+      if (err) {
+          console.error('Erreur lors de la récupération du post:', err);
+          return res.status(500).json({ error: 'Erreur lors de la récupération du post' });
+      }
+
+      if (results.length === 0) {
+          return res.status(404).json({ error: 'Post non trouvé' });
+      }
+
+      res.json(results[0]);
+  });
+});
+
+// Route pour créer un post textuel
+app.post('/posts', verifyRole('user'), (req, res) => {
+  const { text, description } = req.body;
+
+  if (!text || !description) {
+      return res.status(400).json({ error: 'Les champs text et description sont requis' });
+  }
+
+  const userId = req.user.id;
+
+  const getUserQuery = 'SELECT username FROM USERS WHERE id = ?';
+  db.query(getUserQuery, [userId], (err, userResults) => {
+      if (err) {
+          console.error('Erreur lors de la récupération du username:', err);
+          return res.status(500).json({ error: 'Erreur lors de la récupération du username' });
+      }
+
+      if (userResults.length === 0) {
+          return res.status(404).json({ error: 'Utilisateur non trouvé' });
+      }
+
+      const username = userResults[0].username;
+
+      const insertPostQuery = 'INSERT INTO POSTS_TXT (text, description, user_id, username, likes) VALUES (?, ?, ?, ?, 0)';
+      db.query(insertPostQuery, [text, description, userId, username], (err, results) => {
+          if (err) {
+              console.error('Erreur lors de la création du post:', err);
+              return res.status(500).json({ error: 'Erreur lors de la création du post' });
+          }
+
+          res.status(201).json({
+              message: 'Post créé avec succès',
+              postId: results.insertId,
+          });
+      });
+  });
+});
+
+// Route pour modifier le nombre de likes d'un post textuel
+app.put('/posts/:id/likes', verifyRole('user'), (req, res) => {
+  const postId = req.params.id;
+  const { likes } = req.body;
+
+  if (typeof likes !== 'number') {
+      return res.status(400).json({ error: 'Le champ likes est requis et doit être un nombre' });
+  }
+
+  const getPostQuery = 'SELECT * FROM POSTS_TXT WHERE post_txt_id = ?';
+  db.query(getPostQuery, [postId], (err, postResults) => {
+      if (err) {
+          console.error('Erreur lors de la récupération du post:', err);
+          return res.status(500).json({ error: 'Erreur lors de la récupération du post' });
+      }
+
+      if (postResults.length === 0) {
+          return res.status(404).json({ error: 'Post non trouvé' });
+      }
+
+      const updateLikesQuery = 'UPDATE POSTS_TXT SET likes = ? WHERE post_txt_id = ?';
+      db.query(updateLikesQuery, [likes, postId], (err) => {
+          if (err) {
+              console.error('Erreur lors de la modification du nombre de likes:', err);
+              return res.status(500).json({ error: 'Erreur lors de la modification du nombre de likes' });
+          }
+
+          res.json({ message: 'Nombre de likes modifié avec succès' });
+      });
+  });
+});
