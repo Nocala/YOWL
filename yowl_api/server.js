@@ -26,6 +26,7 @@ const verifyToken = (req, res, next) => {
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) return res.status(401).json({ error: 'Token invalide' });
 
+    console.log('decoded:', decoded); // Log decoded token
     req.user = decoded;
     next();
   });
@@ -120,7 +121,9 @@ app.post('/login', (req, res) => {
 
       if (!isMatch) return res.status(401).json({ error: 'Mot de passe incorrect' });
 
-      const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
+      console.log('Creating token for user:', user); // Log user details
+
+      const token = jwt.sign({ id: user.user_id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
 
       res.json({ token });
     });
@@ -316,3 +319,71 @@ app.post('/posts-txt/:id/like', verifyToken, (req, res) => {
   });
 });
 
+
+const uploadMedia = multer({ dest: 'uploads/' });
+
+app.post('/posts-media', verifyToken, uploadMedia.single('media'), (req, res) => {
+    const media = req.file;
+    const { description } = req.body;
+    const user_id = req.user.id; // Assurez-vous que `verifyToken` ajoute l'ID de l'utilisateur à `req.user`
+
+    if (!media) {
+        return res.status(400).send({ message: 'No file uploaded' });
+    }
+
+    // Récupérer l'username à partir du user_id
+    getUsernameByUserId(user_id)
+        .then(username => {
+            const post = {
+                id_media: media.filename,
+                description,
+                username,
+                user_id,
+                created_at: new Date()
+            };
+
+            // Sauvegarder le post dans la base de données
+            savePostToDatabase(post)
+                .then(() => {
+                    res.status(201).send({ message: 'Post and media uploaded successfully', post });
+                })
+                .catch(error => {
+                    res.status(500).send({ message: 'Error saving post', error });
+                });
+        })
+        .catch(error => {
+            res.status(500).send({ message: 'Error retrieving username', error });
+        });
+});
+
+// Fonction pour récupérer l'username à partir du user_id
+function getUsernameByUserId(user_id) {
+    return new Promise((resolve, reject) => {
+        const query = 'SELECT username FROM USERS WHERE user_id = ?';
+        db.query(query, [user_id], (err, results) => {
+            if (err) {
+                return reject(err);
+            }
+            if (results.length === 0) {
+                return reject(new Error('User not found'));
+            }
+            resolve(results[0].username);
+        });
+    });
+}
+
+// Fonction pour sauvegarder le post dans la base de données
+function savePostToDatabase(post) {
+    return new Promise((resolve, reject) => {
+        const query = 'INSERT INTO POST_MEDIA (id_media, description, username, user_id) VALUES (?, ?, ?, ?)';
+        const values = [post.id_media, post.description, post.username, post.user_id];
+
+        db.query(query, values, (err, results) => {
+            if (err) {
+                console.error('Erreur lors de la sauvegarde du post dans la base de données :', err);
+                return reject(err);
+            }
+            resolve(results);
+        });
+    });
+}
