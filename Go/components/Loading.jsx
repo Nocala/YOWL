@@ -10,6 +10,6 @@ const loading = ({size="large", color= theme.colors.primary}) => {
   )
 }
 
-export default loading
+export default Loading
 
 const styles = StyleSheet.create({})
