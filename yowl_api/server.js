@@ -130,7 +130,75 @@ app.post('/login', (req, res) => {
 });
 
 
+//------------------------------------------
+// Route pour uploader une image ou vidéo
+app.post('/upload', upload.single('file'), (req, res) => {
+  const { user_id } = req.body;
 
+  // Vérifier que user_id est présent
+  if (!user_id) return res.status(400).json({ error: 'user_id requis' });
+
+  // Vérifier si l'utilisateur existe dans la base de données
+  db.query('SELECT user_id FROM USERS WHERE user_id = ?', [user_id], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la recherche de l\'utilisateur :', err);
+      return res.status(500).json({ error: 'Erreur interne' });
+    }
+    if (results.length === 0) return res.status(404).json({ error: 'Utilisateur non trouvé' });
+  
+    // Si l'utilisateur existe, on continue avec l'upload
+    const filename = req.file.filename;
+    const filetype = req.file.mimetype;
+    const filepath = `/uploads/${filename}`;
+  
+    console.log('Données à insérer dans MEDIAS :', { user_id, filename, filetype, filepath });
+  
+    // Insertion des données dans la table MEDIAS
+    db.query('INSERT INTO MEDIAS (user_id, filename, filetype, filepath) VALUES (?, ?, ?, ?)',
+      [user_id, filename, filetype, filepath], (err, results) => {
+        if (err) {
+          console.error('Erreur lors de l\'insertion dans la base de données :', err);
+          return res.status(500).json({ error: 'Erreur lors de l\'upload' });
+        }
+  
+        res.status(201).json({ message: 'Fichier uploadé avec succès', mediaId: results.insertId, filepath });
+    });
+  });
+});
+
+//------------------------------------------
+// Route pour récupérer les médias d'un utilisateur
+app.get('/media/:user_id', (req, res) => {
+  const { user_id } = req.params;
+
+  console.log('Requête pour récupérer les médias de l\'utilisateur avec user_id:', user_id);
+
+  db.query('SELECT * FROM MEDIAS WHERE user_id = ?', [user_id], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération des médias :', err);
+      return res.status(500).json({ error: 'Erreur interne' });
+    }
+
+    console.log('Résultats de la requête:', results);
+
+    if (results.length === 0) return res.status(404).json({ error: 'Aucun média trouvé pour cet utilisateur' });
+
+    res.status(200).json(results);
+  });
+});
+
+//------------------------------------------
+// Route pour récupérer un fichier média par son nom de fichier
+app.get('/media/file/:filename', (req, res) => {
+  const { filename } = req.params;
+  const filepath = path.join(__dirname, 'uploads', filename);
+  
+  res.sendFile(filepath, (err) => {
+    if (err) {
+      res.status(404).json({ error: 'Fichier introuvable' });
+    }
+  });
+});
 
 
 //------------------------------------------
@@ -252,72 +320,3 @@ app.put('/posts/:id/likes', verifyRole('user'), (req, res) => {
 });
 
 
-//------------------------------------------
-// Route pour uploader une image ou vidéo
-app.post('/upload', upload.single('file'), (req, res) => {
-  const { user_id } = req.body;
-
-  // Vérifier que user_id est présent
-  if (!user_id) return res.status(400).json({ error: 'user_id requis' });
-
-  // Vérifier si l'utilisateur existe dans la base de données
-  db.query('SELECT user_id FROM USERS WHERE user_id = ?', [user_id], (err, results) => {
-    if (err) {
-      console.error('Erreur lors de la recherche de l\'utilisateur :', err);
-      return res.status(500).json({ error: 'Erreur interne' });
-    }
-    if (results.length === 0) return res.status(404).json({ error: 'Utilisateur non trouvé' });
-  
-    // Si l'utilisateur existe, on continue avec l'upload
-    const filename = req.file.filename;
-    const filetype = req.file.mimetype;
-    const filepath = `/uploads/${filename}`;
-  
-    console.log('Données à insérer dans MEDIAS :', { user_id, filename, filetype, filepath });
-  
-    // Insertion des données dans la table MEDIAS
-    db.query('INSERT INTO MEDIAS (user_id, filename, filetype, filepath) VALUES (?, ?, ?, ?)',
-      [user_id, filename, filetype, filepath], (err, results) => {
-        if (err) {
-          console.error('Erreur lors de l\'insertion dans la base de données :', err);
-          return res.status(500).json({ error: 'Erreur lors de l\'upload' });
-        }
-  
-        res.status(201).json({ message: 'Fichier uploadé avec succès', mediaId: results.insertId, filepath });
-    });
-  });
-});
-
-//------------------------------------------
-// Route pour récupérer les médias d'un utilisateur
-app.get('/media/:user_id', (req, res) => {
-  const { user_id } = req.params;
-
-  console.log('Requête pour récupérer les médias de l\'utilisateur avec user_id:', user_id);
-
-  db.query('SELECT * FROM MEDIAS WHERE user_id = ?', [user_id], (err, results) => {
-    if (err) {
-      console.error('Erreur lors de la récupération des médias :', err);
-      return res.status(500).json({ error: 'Erreur interne' });
-    }
-
-    console.log('Résultats de la requête:', results);
-
-    if (results.length === 0) return res.status(404).json({ error: 'Aucun média trouvé pour cet utilisateur' });
-
-    res.status(200).json(results);
-  });
-});
-
-//------------------------------------------
-// Route pour récupérer un fichier média par son nom de fichier
-app.get('/media/file/:filename', (req, res) => {
-  const { filename } = req.params;
-  const filepath = path.join(__dirname, 'uploads', filename);
-  
-  res.sendFile(filepath, (err) => {
-    if (err) {
-      res.status(404).json({ error: 'Fichier introuvable' });
-    }
-  });
-});
