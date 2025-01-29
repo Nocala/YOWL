@@ -316,3 +316,87 @@ app.post('/posts-txt/:id/like', verifyToken, (req, res) => {
   });
 });
 
+
+//------------------------------------------
+// Routes articles
+
+// Route pour récupérer tous les articles
+app.get('/articles', (req, res) => {
+  const page = parseInt(req.query.page, 10) || 1; // Page par défaut : 1
+  const limit = parseInt(req.query.limit, 10) || 10; // Limite par défaut : 10 articles par requête
+  const offset = (page - 1) * limit;
+
+  const query = 'SELECT * FROM ARTICLES';
+  const queryParams = [limit, offset];
+
+  db.query(query, queryParams, (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération des articles:', err);
+      return res.status(500).json({ error: 'Erreur lors de la récupération des articles' });
+    }
+
+    // Vérifie s'il reste encore des articles à charger
+    const nextPage = results.length === limit ? page + 1 : null;
+
+    res.json({ articles: results, nextPage });
+  });
+});
+
+// Route pour récupérer un article par son ID
+app.get('/articles/:id', (req, res) => {
+  const articleId = req.params.id;
+
+  if (!articleId) {
+    return res.status(400).json({ error: 'ID de l\'article requis' });
+  }
+
+  const query = 'SELECT * FROM ARTICLES WHERE article_id = ?';
+  db.query(query, [articleId], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération de l\'article:', err);
+      return res.status(500).json({ error: 'Erreur lors de la récupération de l\'article' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Article non trouvé' });
+    }
+
+    res.json(results[0]);
+  });
+});
+
+// Route pour créer un article
+app.post('/articles', verifyToken, (req, res) => {
+  const { titre, description, auteur, corps, sport, date, mediaId } = req.body;
+
+  if (!titre || !description || !auteur || !corps || !sport || !date || !mediaId) {
+    return res.status(400).json({ error: 'Les champs titre, description, auteur, corps, sport, date et mediaId sont requis' });
+  }
+
+  const getMediaQuery = 'SELECT filepath FROM MEDIAS WHERE id_media = ?';
+  db.query(getMediaQuery, [mediaId], (err, mediaResults) => {
+    if (err) {
+      console.error('Erreur lors de la récupération de l\'ID média:', err);
+      return res.status(500).json({ error: 'Erreur lors de la récupération de l\'ID média' });
+    }
+
+    if (mediaResults.length === 0) {
+      return res.status(404).json({ error: 'Média non trouvé' });
+    }
+
+    const id_media = mediaResults[0].id;
+
+    const insertArticleQuery = 'INSERT INTO ARTICLES (titre, description, corps, sport, date, id_media, auteur) VALUES (?, ?, ?, ?, ?, ?, ?)';
+    db.query(insertArticleQuery, [titre, description, corps, sport, date, id_media, auteur], (err, results) => {
+      if (err) {
+        console.error('Erreur lors de la création de l\'article:', err);
+        return res.status(500).json({ error: 'Erreur lors de la création de l\'article' });
+      }
+
+      res.status(201).json({
+        message: 'Article créé avec succès',
+        articleId: results.insertId,
+      });
+    });
+  });
+});
