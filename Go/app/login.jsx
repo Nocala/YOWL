@@ -1,4 +1,4 @@
-import { ImageBackground, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Alert, ImageBackground, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useRef, useState } from 'react'
 import ScreenWrapper from '../components/SreenWrapper'
 import { StatusBar } from 'expo-status-bar'
@@ -14,10 +14,12 @@ const Login = () => {
     const router = useRouter();
     const emailRef = useRef("");
     const passwordRef = useRef("");
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const onSubmit = ()=>{
-
+        if(!emailRef.current || !passwordRef.current){
+            Alert.alert('Login', "please fill all the fields!")
+        }
     }
   return (
     <ImageBackground source={require('../assets/images/background_login.png')}
@@ -39,16 +41,16 @@ const Login = () => {
                         Please login to continue 
                     </Text>
                     <Input
-                        placeholder= 'Enter your email'
+                        placeholder= "Nom d'utilisateur"
                         onChangeText={value=> emailRef.current = value}
                     />
                     <Input
-                        placeholder= 'Enter your password'
+                        placeholder= 'Mot de passe'
                         secureTextEntry
-                        onChangeText={value=> emailRef.current = value}
+                        onChangeText={value=> passwordRef.current = value}
                     />
                     <Text style={styles.forgotPassword}>
-                        Forgot Password ?
+                        Mot de passe oublié ?
                     </Text>
                     {/* button login */}
                     <Button title='Login' loading={loading} onPress={onSubmit} />
@@ -56,10 +58,10 @@ const Login = () => {
                 {/* footer */}
                 <View style={styles.footer}>
                     <Text style={styles.footerText}>
-                        Dont't have an account ?
+                        Tu n'as pas de compte ?
                     </Text>
-                    <Pressable>
-                         <Text style={[styles.footerText, {color: theme.colors.primaryDark, fontWeight: theme.fonts.semibold}]}>Sign up</Text>
+                    <Pressable onPress={()=> router.push('signUp')}>
+                         <Text style={[styles.footerText, {color: theme.colors.orange, fontWeight: theme.fonts.semibold}]}>Inscrit toi ici !</Text>
                     </Pressable>
                 </View>
             </View>
@@ -81,20 +83,23 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         gap: 45,
-        paddingHorizontal: wp(5),
+        padding: wp(5),
+        backgroundColor: theme.colors.whiteorange,
+        borderRadius: theme.radius.xxl
+
     },
     welcomText:{
         fontSize: hp(4),
         fontWeight: theme.fonts.bold,
-        color: theme.colors.text
+        color: theme.colors.orange
     },
     form: {
         gap: 25,
     },
     forgotPassword:{
-        textAlign: 'right',
-        fontWeight: theme.fonts.semibold,
-        color: theme.colors.text
+        textAlign: 'left',
+        fontWeight: theme.fonts.medium,
+        color: theme.colors.orange
     },
     footer:{
         flexDirection: 'row',

@@ -10,7 +10,7 @@ import { useRouter } from 'expo-router'
  const Welcome = () => {
     const router =useRouter(); 
      return (
-         <ScreenWrapper bg='white'>
+         <ScreenWrapper bg={theme.colors.whiteorange}>
              <StatusBar style="dark" />
              <View style={styles.container}>
                 {/* welcome image */}
@@ -32,7 +32,7 @@ import { useRouter } from 'expo-router'
                             Already have an account !
                         </Text>
                         <Pressable onPress={()=> router.push('login')}>
-                            <Text style={[styles.loginText, {color: theme.colors.primaryDark, fontWeight: theme.fonts.semibold}]}>
+                            <Text style={[styles.loginText, {color: theme.colors.orange, fontWeight: theme.fonts.semibold}]}>
                                 Login
                             </Text>
                         </Pressable>
@@ -50,7 +50,7 @@ import { useRouter } from 'expo-router'
         flex: 1,
         alignItems: 'center',
         justifyContent:  'space-around',
-        backgroundColor:  'white',
+        backgroundColor:  theme.colors.whiteorange,
         paddingHorizontal: wp(4)
     },
     welcomeImage: {
