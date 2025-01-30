@@ -5,6 +5,8 @@ export const theme ={
         dark: '#3E3E3E',
         darkLight: '#E1E1E1',
         gray: '#e3e3e3',
+        orange:'#F1600D',
+        whiteorange:'#FEF6ED',
 
         text: '#494949',
         textLight: '#7C7C7C',
