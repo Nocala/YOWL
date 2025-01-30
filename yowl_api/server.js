@@ -418,7 +418,7 @@ app.get('/articles/:id', (req, res) => {
     return res.status(400).json({ error: 'ID de l\'article requis' });
   }
 
-  const query = 'SELECT * FROM ARTICLES WHERE article_id = ?';
+  const query = 'SELECT * FROM ARTICLES WHERE id_article = ?';
   db.query(query, [articleId], (err, results) => {
     if (err) {
       console.error('Erreur lors de la récupération de l\'article:', err);
@@ -434,37 +434,62 @@ app.get('/articles/:id', (req, res) => {
 });
 
 // Route pour créer un article
-app.post('/articles', verifyToken, (req, res) => {
-  const { titre, description, auteur, corps, sport, date, mediaId } = req.body;
+app.post('/articles', verifyToken, upload.single('file'), (req, res) => {
+  const { titre, description, corps, sport, date } = req.body;
 
-  if (!titre || !description || !auteur || !corps || !sport || !date || !mediaId) {
-    return res.status(400).json({ error: 'Les champs titre, description, auteur, corps, sport, date et mediaId sont requis' });
+  if (!titre || !description || !corps || !sport || !date) {
+    return res.status(400).json({ error: 'Les champs titre, description, corps, sport et date sont requis' });
   }
 
-  const getMediaQuery = 'SELECT filepath FROM MEDIAS WHERE id_media = ?';
-  db.query(getMediaQuery, [mediaId], (err, mediaResults) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'Un fichier est requis' });
+  }
+
+  const userId = req.user.id; // Récupération automatique via le token JWT
+
+  // Récupérer le username de l'utilisateur
+  const getUserQuery = 'SELECT username FROM USERS WHERE user_id = ?';
+  db.query(getUserQuery, [userId], (err, userResults) => {
     if (err) {
-      console.error('Erreur lors de la récupération de l\'ID média:', err);
-      return res.status(500).json({ error: 'Erreur lors de la récupération de l\'ID média' });
+      console.error('Erreur lors de la récupération du username:', err);
+      return res.status(500).json({ error: 'Erreur interne' });
     }
 
-    if (mediaResults.length === 0) {
-      return res.status(404).json({ error: 'Média non trouvé' });
+    if (userResults.length === 0) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' });
     }
 
-    const id_media = mediaResults[0].id;
+    const username = userResults[0].username;
+    const filename = req.file.filename;
+    const filetype = req.file.mimetype;
+    const filepath = `/uploads/${filename}`;
 
-    const insertArticleQuery = 'INSERT INTO ARTICLES (titre, description, corps, sport, date, id_media, auteur) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    db.query(insertArticleQuery, [titre, description, corps, sport, date, id_media, auteur], (err, results) => {
-      if (err) {
-        console.error('Erreur lors de la création de l\'article:', err);
-        return res.status(500).json({ error: 'Erreur lors de la création de l\'article' });
-      }
+    console.log('Données à insérer dans MEDIAS :', { userId, filename, filetype, filepath });
 
-      res.status(201).json({
-        message: 'Article créé avec succès',
-        articleId: results.insertId,
+    // Insérer le fichier dans la table MEDIAS
+    db.query('INSERT INTO MEDIAS (user_id, filename, filetype, filepath) VALUES (?, ?, ?, ?)',
+      [userId, filename, filetype, filepath], (err, mediaResult) => {
+        if (err) {
+          console.error('Erreur lors de l\'insertion du média:', err);
+          return res.status(500).json({ error: 'Erreur lors de l\'upload du média' });
+        }
+
+        const id_media = mediaResult.insertId;
+
+        // Insérer l'article dans ARTICLES
+        db.query('INSERT INTO ARTICLES (titre, description, corps, sport, date, id_media, auteur) VALUES (?, ?, ?, ?, ?, ?, ?)',
+          [titre, description, corps, sport, date, id_media, username], (err, articleResult) => {
+            if (err) {
+              console.error('Erreur lors de la création de l\'article:', err);
+              return res.status(500).json({ error: 'Erreur lors de la création de l\'article' });
+            }
+
+            res.status(201).json({
+              message: 'Article et média créés avec succès',
+              articleId: articleResult.insertId,
+              mediaId: id_media
+            });
+          });
       });
-    });
   });
 });
