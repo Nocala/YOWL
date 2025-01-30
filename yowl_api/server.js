@@ -134,13 +134,10 @@ app.post('/login', (req, res) => {
 //------------------------------------------
 // Route pour uploader une image ou vidéo
 app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
-  const { user_id } = req.body;
-
-  // Vérifier que user_id est présent
-  if (!user_id) return res.status(400).json({ error: 'user_id requis' });
+  const userId = req.user.id; // Récupération automatique via le token JWT
 
   // Vérifier si l'utilisateur existe dans la base de données
-  db.query('SELECT user_id FROM USERS WHERE user_id = ?', [user_id], (err, results) => {
+  db.query('SELECT user_id FROM USERS WHERE user_id = ?', [userId], (err, results) => {
     if (err) {
       console.error('Erreur lors de la recherche de l\'utilisateur :', err);
       return res.status(500).json({ error: 'Erreur interne' });
@@ -152,18 +149,18 @@ app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
     const filetype = req.file.mimetype;
     const filepath = `/uploads/${filename}`;
 
-    console.log('Données à insérer dans MEDIAS :', { user_id, filename, filetype, filepath });
+    console.log('Données à insérer dans MEDIAS :', { userId, filename, filetype, filepath });
 
-    // Insertion des données dans la table MEDIAS
-    db.query('INSERT INTO MEDIAS (user_id, filename, filetype, filepath) VALUES (?, ?, ?, ?)',
-      [user_id, filename, filetype, filepath], (err, results) => {
-        if (err) {
-          console.error('Erreur lors de l\'insertion dans la base de données :', err);
-          return res.status(500).json({ error: 'Erreur lors de l\'upload' });
-        }
+    // Insérer les données dans la table MEDIAS
+    const insertMediaQuery = 'INSERT INTO MEDIAS (user_id, filename, filetype, filepath) VALUES (?, ?, ?, ?)';
+    db.query(insertMediaQuery, [userId, filename, filetype, filepath], (err, result) => {
+      if (err) {
+        console.error('Erreur lors de l\'insertion du média :', err);
+        return res.status(500).json({ error: 'Erreur lors de l\'insertion du média' });
+      }
 
-        res.status(201).json({ message: 'Fichier uploadé avec succès', mediaId: results.insertId, filepath });
-      });
+      res.status(201).json({ message: 'Média uploadé avec succès', mediaId: result.insertId });
+    });
   });
 });
 
@@ -198,6 +195,34 @@ app.get('/media/file/:filename', (req, res) => {
     if (err) {
       res.status(404).json({ error: 'Fichier introuvable' });
     }
+  });
+});
+
+
+// Route pour récupérer un fichier média par son id_media
+app.get('/media/id/:id_media', (req, res) => {
+  const { id_media } = req.params;
+
+  // Rechercher le média dans la base de données
+  db.query('SELECT * FROM MEDIAS WHERE id_media = ?', [id_media], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération du média :', err);
+      return res.status(500).json({ error: 'Erreur interne' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Média non trouvé' });
+    }
+
+    const media = results[0];
+    const filepath = path.join(__dirname, media.filepath);
+
+    // Envoyer le fichier média
+    res.sendFile(filepath, (err) => {
+      if (err) {
+        res.status(404).json({ error: 'Fichier introuvable' });
+      }
+    });
   });
 });
 
@@ -664,4 +689,45 @@ app.delete('/events/:id', verifyToken, (req, res) => {
         eventId: eventId
       });
     });
+});
+
+
+//------------------------------------------
+// Routes sports
+
+// Route pour récupérer tous les sports (noms et id)
+app.get('/sports', (req, res) => {
+  const query = 'SELECT id_sport, name FROM SPORTS';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération des sports:', err);
+      return res.status(500).json({ error: 'Erreur lors de la récupération des sports' });
+    }
+
+    res.json(results);
+  });
+});
+
+// Route pour récupérer un sport par son ID
+app.get('/sports/:id', (req, res) => {
+  const sportId = req.params.id;
+
+  if (!sportId) {
+    return res.status(400).json({ error: 'ID du sport requis' });
+  }
+
+  const query = 'SELECT * FROM SPORTS WHERE id_sport = ?';
+  db.query(query, [sportId], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération du sport:', err);
+      return res.status(500).json({ error: 'Erreur lors de la récupération du sport' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Sport non trouvé' });
+    }
+
+    res.json(results[0]);
+  });
 });
