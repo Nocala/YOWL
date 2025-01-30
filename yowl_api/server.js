@@ -572,8 +572,8 @@ app.get('/events/:id', (req, res) => {
 app.post('/events', verifyToken, upload.single('file'), (req, res) => {
   const { name, date, lieu, sport, genre, nb_participants_max, participants,  description } = req.body;
 
-  if (!name || !date || !lieu || !sport || !genre || !nb_participants_max || !participants || !description) {
-    return res.status(400).json({ error: 'Les champs name, date, lieu, sport, genre, nb_participants_max, participants et description sont requis' });
+  if (!name || !date || !lieu || !sport || !genre || !nb_participants_max  || !description) {
+    return res.status(400).json({ error: 'Les champs name, date, lieu, sport, genre, nb_participants_max et description sont requis' });
   }
 
   if (!req.file) {
@@ -612,7 +612,7 @@ app.post('/events', verifyToken, upload.single('file'), (req, res) => {
         const id_media = mediaResult.insertId;
 
     // Insérer l'event dans EVENTS
-    db.query('INSERT INTO EVENTS (user_id, username, name, date, lieu, sport, genre, nb_participants_max, participants, description, id_media) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    db.query('INSERT INTO EVENTS (user_id, username, name, date, lieu, sport, genre, nb_participants_max, participants, description, id_media) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
       [userId, username, name, date, lieu, sport, genre, nb_participants_max, participants, description, id_media], (err, eventResult) => {
         if (err) {
           console.error('Erreur lors de la création de l\'event:', err);
