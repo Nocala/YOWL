@@ -26,6 +26,7 @@ const verifyToken = (req, res, next) => {
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) return res.status(401).json({ error: 'Token invalide' });
 
+    console.log('decoded:', decoded); // Log decoded token
     req.user = decoded;
     next();
   });
@@ -120,7 +121,9 @@ app.post('/login', (req, res) => {
 
       if (!isMatch) return res.status(401).json({ error: 'Mot de passe incorrect' });
 
-      const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
+      console.log('Creating token for user:', user); // Log user details
+
+      const token = jwt.sign({ id: user.user_id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
 
       res.json({ token });
     });
@@ -400,3 +403,69 @@ app.post('/articles', verifyToken, (req, res) => {
     });
   });
 });
+
+
+//------------------------------------------
+// Routes posts medias
+
+// Route pour créer un post media
+app.post('/posts-media', verifyToken, upload.single('file'), (req, res) => {
+  const { description } = req.body;
+
+  if (!description) {
+    return res.status(400).json({ error: 'Le champ description est requis' });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({ error: 'Un fichier est requis' });
+  }
+
+  const userId = req.user.id; // Récupération automatique via le token JWT
+  console.log('userId:', userId);
+
+  const getUserQuery = 'SELECT username FROM USERS WHERE user_id = ?';
+  db.query(getUserQuery, [userId], (err, userResults) => {
+    if (err) {
+      console.error('Erreur lors de la récupération du username:', err);
+      return res.status(500).json({ error: 'Erreur lors de la récupération du username' });
+    }
+
+    if (userResults.length === 0) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' });
+    }
+
+    const username = userResults[0].username;
+
+    const filename = req.file.filename;
+    const filetype = req.file.mimetype;
+    const filepath = `/uploads/${filename}`;
+
+    console.log('Données à insérer dans MEDIAS :', { userId, filename, filetype, filepath });
+
+    // Insérer le fichier dans la table MEDIAS
+    db.query('INSERT INTO MEDIAS (user_id, filename, filetype, filepath) VALUES (?, ?, ?, ?)',
+      [userId, filename, filetype, filepath], (err, mediaResult) => {
+        if (err) {
+          console.error('Erreur lors de l\'insertion du média:', err);
+          return res.status(500).json({ error: 'Erreur lors de l\'upload' });
+        }
+
+        const id_media = mediaResult.insertId;
+
+        // Insérer le post média dans POST_MEDIA
+        db.query('INSERT INTO POST_MEDIA (id_media, description, username, user_id) VALUES (?, ?, ?, ?)',
+          [id_media, description, username, userId], (err, postResult) => {
+            if (err) {
+              console.error('Erreur lors de la création du post média:', err);
+              return res.status(500).json({ error: 'Erreur lors de la création du post' });
+            }
+
+            res.status(201).json({
+              message: 'Post média créé avec succès',
+              postMediaId: postResult.insertId,
+            });
+          });
+      });
+  });
+});
+
