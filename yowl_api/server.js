@@ -320,70 +320,67 @@ app.post('/posts-txt/:id/like', verifyToken, (req, res) => {
 });
 
 
-const uploadMedia = multer({ dest: 'uploads/' });
+//------------------------------------------
+// Routes posts medias
 
-app.post('/posts-media', verifyToken, uploadMedia.single('media'), (req, res) => {
-    const media = req.file;
-    const { description } = req.body;
-    const user_id = req.user.id; // Assurez-vous que `verifyToken` ajoute l'ID de l'utilisateur à `req.user`
+// Route pour créer un post media
+app.post('/posts-media', verifyToken, upload.single('file'), (req, res) => {
+  const { description } = req.body;
 
-    if (!media) {
-        return res.status(400).send({ message: 'No file uploaded' });
+  if (!description) {
+    return res.status(400).json({ error: 'Le champ description est requis' });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({ error: 'Un fichier est requis' });
+  }
+
+  const userId = req.user.id; // Récupération automatique via le token JWT
+  console.log('userId:', userId);
+
+  const getUserQuery = 'SELECT username FROM USERS WHERE user_id = ?';
+  db.query(getUserQuery, [userId], (err, userResults) => {
+    if (err) {
+      console.error('Erreur lors de la récupération du username:', err);
+      return res.status(500).json({ error: 'Erreur lors de la récupération du username' });
     }
 
-    // Récupérer l'username à partir du user_id
-    getUsernameByUserId(user_id)
-        .then(username => {
-            const post = {
-                id_media: media.filename,
-                description,
-                username,
-                user_id,
-                created_at: new Date()
-            };
+    if (userResults.length === 0) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' });
+    }
 
-            // Sauvegarder le post dans la base de données
-            savePostToDatabase(post)
-                .then(() => {
-                    res.status(201).send({ message: 'Post and media uploaded successfully', post });
-                })
-                .catch(error => {
-                    res.status(500).send({ message: 'Error saving post', error });
-                });
-        })
-        .catch(error => {
-            res.status(500).send({ message: 'Error retrieving username', error });
-        });
+    const username = userResults[0].username;
+
+    const filename = req.file.filename;
+    const filetype = req.file.mimetype;
+    const filepath = `/uploads/${filename}`;
+
+    console.log('Données à insérer dans MEDIAS :', { userId, filename, filetype, filepath });
+
+    // Insérer le fichier dans la table MEDIAS
+    db.query('INSERT INTO MEDIAS (user_id, filename, filetype, filepath) VALUES (?, ?, ?, ?)',
+      [userId, filename, filetype, filepath], (err, mediaResult) => {
+        if (err) {
+          console.error('Erreur lors de l\'insertion du média:', err);
+          return res.status(500).json({ error: 'Erreur lors de l\'upload' });
+        }
+
+        const id_media = mediaResult.insertId;
+
+        // Insérer le post média dans POST_MEDIA
+        db.query('INSERT INTO POST_MEDIA (id_media, description, username, user_id) VALUES (?, ?, ?, ?)',
+          [id_media, description, username, userId], (err, postResult) => {
+            if (err) {
+              console.error('Erreur lors de la création du post média:', err);
+              return res.status(500).json({ error: 'Erreur lors de la création du post' });
+            }
+
+            res.status(201).json({
+              message: 'Post média créé avec succès',
+              postMediaId: postResult.insertId,
+            });
+          });
+      });
+  });
 });
 
-// Fonction pour récupérer l'username à partir du user_id
-function getUsernameByUserId(user_id) {
-    return new Promise((resolve, reject) => {
-        const query = 'SELECT username FROM USERS WHERE user_id = ?';
-        db.query(query, [user_id], (err, results) => {
-            if (err) {
-                return reject(err);
-            }
-            if (results.length === 0) {
-                return reject(new Error('User not found'));
-            }
-            resolve(results[0].username);
-        });
-    });
-}
-
-// Fonction pour sauvegarder le post dans la base de données
-function savePostToDatabase(post) {
-    return new Promise((resolve, reject) => {
-        const query = 'INSERT INTO POST_MEDIA (id_media, description, username, user_id) VALUES (?, ?, ?, ?)';
-        const values = [post.id_media, post.description, post.username, post.user_id];
-
-        db.query(query, values, (err, results) => {
-            if (err) {
-                console.error('Erreur lors de la sauvegarde du post dans la base de données :', err);
-                return reject(err);
-            }
-            resolve(results);
-        });
-    });
-}
