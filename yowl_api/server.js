@@ -493,3 +493,175 @@ app.post('/articles', verifyToken, upload.single('file'), (req, res) => {
       });
   });
 });
+
+
+//------------------------------------------
+// Routes events
+
+// Route pour récupérer tous les events
+app.get('/events', (req, res) => {
+  const page = parseInt(req.query.page, 10) || 1; // Page par défaut : 1
+  const limit = parseInt(req.query.limit, 10) || 10; // Limite par défaut : 10 events par requête
+  const offset = (page - 1) * limit;
+
+  const query = 'SELECT * FROM EVENTS';
+  const queryParams = [limit, offset];
+
+  db.query(query, queryParams, (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération des events:', err);
+      return res.status(500).json({ error: 'Erreur lors de la récupération des events' });
+    }
+
+    // Vérifie s'il reste encore des events à charger
+    const nextPage = results.length === limit ? page + 1 : null;
+
+    res.json({ events: results, nextPage });
+  });
+});
+
+// Route pour récupérer un event par son ID
+app.get('/events/:id', (req, res) => {
+  const eventId = req.params.id;
+
+  if (!eventId) {
+    return res.status(400).json({ error: 'ID de l\'event requis' });
+  }
+
+  const query = 'SELECT * FROM EVENTS WHERE id_event = ?';
+  db.query(query, [eventId], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération de l\'event:', err);
+      return res.status(500).json({ error: 'Erreur lors de la récupération de l\'event' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Event non trouvé' });
+    }
+
+    res.json(results[0]);
+  });
+});
+
+// Route pour créer un event 
+app.post('/events', verifyToken, upload.single('file'), (req, res) => {
+  const { name, date, lieu, sport, genre, nb_participants_max, participants,  description } = req.body;
+
+  if (!name || !date || !lieu || !sport || !genre || !nb_participants_max || !participants || !description) {
+    return res.status(400).json({ error: 'Les champs name, date, lieu, sport, genre, nb_participants_max, participants et description sont requis' });
+  }
+
+  if (!req.file) {
+    return res.status(400).json({ error: 'Un fichier est requis' });
+  }
+
+  const userId = req.user.id; // Récupération automatique via le token JWT
+
+  // Récupérer le username de l'utilisateur
+  const getUserQuery = 'SELECT username FROM USERS WHERE user_id = ?';
+  db.query(getUserQuery, [userId], (err, userResults) => {
+    if (err) {
+      console.error('Erreur lors de la récupération du username:', err);
+      return res.status(500).json({ error: 'Erreur interne' });
+    }
+
+    if (userResults.length === 0) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' });
+    }
+
+    const username = userResults[0].username;
+    const filename = req.file.filename;
+    const filetype = req.file.mimetype;
+    const filepath = `/uploads/${filename}`;
+
+    console.log('Données à insérer dans MEDIAS :', { userId, filename, filetype, filepath });
+
+    // Insérer le fichier dans la table MEDIAS
+    db.query('INSERT INTO MEDIAS (user_id, filename, filetype, filepath) VALUES (?, ?, ?, ?)',
+      [userId, filename, filetype, filepath], (err, mediaResult) => {
+        if (err) {
+          console.error('Erreur lors de l\'insertion du média:', err);
+          return res.status(500).json({ error: 'Erreur lors de l\'upload du média' });
+        }
+
+        const id_media = mediaResult.insertId;
+
+    // Insérer l'event dans EVENTS
+    db.query('INSERT INTO EVENTS (user_id, username, name, date, lieu, sport, genre, nb_participants_max, participants, description, id_media) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [userId, username, name, date, lieu, sport, genre, nb_participants_max, participants, description, id_media], (err, eventResult) => {
+        if (err) {
+          console.error('Erreur lors de la création de l\'event:', err);
+          return res.status(500).json({ error: 'Erreur lors de la création de l\'event' });
+        }
+
+        res.status(201).json({
+          message: 'Event et média créés avec succès',
+          eventId: eventResult.insertId,
+          mediaId: id_media
+        });
+      });
+    });
+  });
+});
+
+//Route pour modifier un event
+app.put('/events/:id', verifyToken, (req, res) => {
+  const eventId = req.params.id;
+  const { name, date, lieu, sport, genre, nb_participants_max, participants, description } = req.body;
+
+  if (!name || !date || !lieu || !sport || !genre || !nb_participants_max || !participants || !description) {
+    return res.status(400).json({ error: 'Les champs name, date, lieu, sport, genre, nb_participants_max, participants et description sont requis' });
+  }
+
+  const userId = req.user.id; // Récupération automatique via le token JWT
+
+  // Récupérer le username de l'utilisateur
+  const getUserQuery = 'SELECT username FROM USERS WHERE user_id = ?';
+  db.query(getUserQuery, [userId], (err, userResults) => {
+    if (err) {
+      console.error('Erreur lors de la récupération du username:', err);
+      return res.status(500).json({ error: 'Erreur interne' });
+    }
+
+    if (userResults.length === 0) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' });
+    }
+
+    const username = userResults[0].username;
+
+    // Insérer l'event dans EVENTS
+    db.query('UPDATE EVENTS SET name = ?, date = ?, lieu = ?, sport = ?, genre = ?, nb_participants_max = ?, participants = ?, description = ? WHERE id_event = ? AND user_id = ?',
+      [name, date, lieu, sport, genre, nb_participants_max, participants, description, eventId, userId], (err, eventResult) => {
+        if (err) {
+          console.error('Erreur lors de la modification de l\'event:', err);
+          return res.status(500).json({ error: 'Erreur lors de la modification de l\'event' });
+        }
+
+        res.status(200).json({
+          message: 'Event modifié avec succès',
+          eventId: eventId
+        });
+      });
+    });
+});
+
+//Route pour supprimer un event
+app.delete('/events/:id', verifyToken, (req, res) => {
+  const eventId = req.params.id;
+
+  const userId = req.user.id; // Récupération automatique via le token JWT
+
+  // Supprimer l'event dans EVENTS
+  db.query('DELETE FROM EVENTS WHERE id_event = ? AND user_id = ?',
+    [eventId, userId], (err, eventResult) => {
+      if (err) {
+        console.error('Erreur lors de la suppression de l\'event:', err);
+        return res.status(500).json({ error: 'Erreur lors de la suppression de l\'event' });
+      }
+
+      res.status(200).json({
+        message: 'Event supprimé avec succès',
+        eventId: eventId
+      });
+    });
+});
