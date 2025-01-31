@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const db = require('./db');
+const db = require('./db.js');
 const mysql = require('mysql2');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
@@ -690,6 +690,64 @@ app.delete('/events/:id', verifyToken, (req, res) => {
       });
     });
 });
+
+
+// Route pour ajouter un participant à un événement
+app.post('/events/:id/participants', verifyToken, (req, res) => {
+  const eventId = req.params.id;
+  const userId = req.user.id; // Récupération automatique de l'utilisateur connecté via le token JWT
+
+  // Vérifier si l'événement existe
+  db.query('SELECT * FROM EVENTS WHERE id_event = ?', [eventId], (err, eventResults) => {
+    if (err) {
+      console.error('Erreur lors de la récupération de l\'événement:', err);
+      return res.status(500).json({ error: 'Erreur interne' });
+    }
+
+    if (eventResults.length === 0) {
+      return res.status(404).json({ error: 'Événement non trouvé' });
+    }
+
+    // Vérifier si l'utilisateur est déjà inscrit
+    db.query('SELECT * FROM EVENT_PARTICIPANTS WHERE event_id = ? AND user_id = ?', [eventId, userId], (err, participantResults) => {
+      if (err) {
+        console.error('Erreur lors de la vérification du participant:', err);
+        return res.status(500).json({ error: 'Erreur interne' });
+      }
+
+      if (participantResults.length > 0) {
+        return res.status(400).json({ error: 'Utilisateur déjà inscrit à cet événement' });
+      }
+
+      // Vérifier le nombre maximal de participants
+      const { nb_participants_max } = eventResults[0];
+
+      db.query('SELECT COUNT(*) AS count FROM EVENT_PARTICIPANTS WHERE event_id = ?', [eventId], (err, countResults) => {
+        if (err) {
+          console.error('Erreur lors du comptage des participants:', err);
+          return res.status(500).json({ error: 'Erreur interne' });
+        }
+
+        const currentParticipants = countResults[0].count;
+
+        if (currentParticipants >= nb_participants_max) {
+          return res.status(400).json({ error: 'Le nombre maximal de participants est atteint' });
+        }
+
+        // Ajouter l'utilisateur à l'événement
+        db.query('INSERT INTO EVENT_PARTICIPANTS (event_id, user_id) VALUES (?, ?)', [eventId, userId], (err) => {
+          if (err) {
+            console.error('Erreur lors de l\'ajout du participant:', err);
+            return res.status(500).json({ error: 'Erreur interne' });
+          }
+
+          res.status(201).json({ message: 'Utilisateur ajouté à l\'événement avec succès' });
+        });
+      });
+    });
+  });
+});
+
 
 
 //------------------------------------------
