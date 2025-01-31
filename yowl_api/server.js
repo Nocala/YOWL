@@ -570,7 +570,7 @@ app.get('/events/:id', (req, res) => {
 
 // Route pour créer un event 
 app.post('/events', verifyToken, upload.single('file'), (req, res) => {
-  const { name, date, lieu, sport, genre, nb_participants_max, participants,  description } = req.body;
+  const { name, date, lieu, sport, genre, nb_participants_max,  description } = req.body;
 
   if (!name || !date || !lieu || !sport || !genre || !nb_participants_max  || !description) {
     return res.status(400).json({ error: 'Les champs name, date, lieu, sport, genre, nb_participants_max et description sont requis' });
@@ -612,8 +612,8 @@ app.post('/events', verifyToken, upload.single('file'), (req, res) => {
         const id_media = mediaResult.insertId;
 
     // Insérer l'event dans EVENTS
-    db.query('INSERT INTO EVENTS (user_id, username, name, date, lieu, sport, genre, nb_participants_max, participants, description, id_media) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [userId, username, name, date, lieu, sport, genre, nb_participants_max, participants, description, id_media], (err, eventResult) => {
+    db.query('INSERT INTO EVENTS (user_id, username, name, date, lieu, sport, genre, nb_participants_max, description, id_media) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [userId, username, name, date, lieu, sport, genre, nb_participants_max, description, id_media], (err, eventResult) => {
         if (err) {
           console.error('Erreur lors de la création de l\'event:', err);
           return res.status(500).json({ error: 'Erreur lors de la création de l\'event' });
@@ -632,10 +632,10 @@ app.post('/events', verifyToken, upload.single('file'), (req, res) => {
 //Route pour modifier un event
 app.put('/events/:id', verifyToken, (req, res) => {
   const eventId = req.params.id;
-  const { name, date, lieu, sport, genre, nb_participants_max, participants, description } = req.body;
+  const { name, date, lieu, sport, genre, nb_participants_max, description } = req.body;
 
-  if (!name || !date || !lieu || !sport || !genre || !nb_participants_max || !participants || !description) {
-    return res.status(400).json({ error: 'Les champs name, date, lieu, sport, genre, nb_participants_max, participants et description sont requis' });
+  if (!name || !date || !lieu || !sport || !genre || !nb_participants_max || !description) {
+    return res.status(400).json({ error: 'Les champs name, date, lieu, sport, genre, nb_participants_max et description sont requis' });
   }
 
   const userId = req.user.id; // Récupération automatique via le token JWT
@@ -655,8 +655,8 @@ app.put('/events/:id', verifyToken, (req, res) => {
     const username = userResults[0].username;
 
     // Insérer l'event dans EVENTS
-    db.query('UPDATE EVENTS SET name = ?, date = ?, lieu = ?, sport = ?, genre = ?, nb_participants_max = ?, participants = ?, description = ? WHERE id_event = ? AND user_id = ?',
-      [name, date, lieu, sport, genre, nb_participants_max, participants, description, eventId, userId], (err, eventResult) => {
+    db.query('UPDATE EVENTS SET name = ?, date = ?, lieu = ?, sport = ?, genre = ?, nb_participants_max = ?, description = ? WHERE id_event = ? AND user_id = ?',
+      [name, date, lieu, sport, genre, nb_participants_max, description, eventId, userId], (err, eventResult) => {
         if (err) {
           console.error('Erreur lors de la modification de l\'event:', err);
           return res.status(500).json({ error: 'Erreur lors de la modification de l\'event' });
@@ -748,6 +748,44 @@ app.post('/events/:id/participants', verifyToken, (req, res) => {
   });
 });
 
+// Route pour récupérer les participants d'un événement
+app.get('/events/:id/participants', (req, res) => {
+  const eventId = req.params.id;
+
+  db.query(`
+    SELECT u.user_id, u.username 
+    FROM USERS u
+    JOIN EVENT_PARTICIPANTS ep ON u.user_id = ep.user_id
+    WHERE ep.event_id = ?
+  `, [eventId], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération des participants:', err);
+      return res.status(500).json({ error: 'Erreur interne' });
+    }
+
+    res.json({ participants: results });
+  });
+});
+
+
+// Route pour supprimer un participant d'un événement
+app.delete('/events/:id/participants', verifyToken, (req, res) => {
+  const eventId = req.params.id;
+  const userId = req.user.id;
+
+  db.query('DELETE FROM EVENT_PARTICIPANTS WHERE event_id = ? AND user_id = ?', [eventId, userId], (err, result) => {
+    if (err) {
+      console.error('Erreur lors du retrait du participant:', err);
+      return res.status(500).json({ error: 'Erreur interne' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Participant non trouvé' });
+    }
+
+    res.json({ message: 'Utilisateur retiré de l\'événement avec succès' });
+  });
+});
 
 
 //------------------------------------------
