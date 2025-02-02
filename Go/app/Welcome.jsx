@@ -23,13 +23,13 @@ import { useRouter } from 'expo-router'
                 {/* footer */}
                 <View style={styles.footer}>
                     <Button
-                        title='Getting Stared'
+                        title='Je commence'
                         buttonStyle={{marginHorizontal: wp(3)}}
                         onPress={()=> router.push('signUp')}
                     />
                     <View style={styles.bottomTextContainer}>
                         <Text style={styles.loginText}>
-                            Already have an account !
+                            J'ai déjà un compte !
                         </Text>
                         <Pressable onPress={()=> router.push('login')}>
                             <Text style={[styles.loginText, {color: theme.colors.orange, fontWeight: theme.fonts.semibold}]}>

@@ -7,6 +7,8 @@ export const theme ={
         gray: '#e3e3e3',
         orange:'#F1600D',
         whiteorange:'#FEF6ED',
+        blueLight: '#50A5B1',
+        blueDark: '#1A265A',
 
         text: '#494949',
         textLight: '#7C7C7C',
