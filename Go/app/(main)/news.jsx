@@ -29,6 +29,7 @@ const News = () => {
         {articles.map(article => (
           <Article
             key={article.id_article}
+            id_article={article.id_article}
             title={article.titre}
             description={article.description}
             body={article.corps}

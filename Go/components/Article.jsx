@@ -2,13 +2,12 @@ import React from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native'
 import { theme } from '../constants/theme'
 
-const Article = ({ title, description, body, sport, date, id_media, author }) => {
+const Article = ({ title, description, sport, date, id_media, author }) => {
   return (
     <View style={styles.container}>
       <Image source={{ uri: id_media }} style={styles.image} />
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
-      <Text style={styles.body}>{body}</Text>
       <Text style={styles.sport}>{sport}</Text>
       <Text style={styles.date}>{date}</Text>
       <Text style={styles.author}>By {author}</Text>
