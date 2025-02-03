@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     margin: 10,
     backgroundColor: theme.colors.whiteorange,
     borderRadius: theme.radius.md,
-    shadowColor: theme.colors.dark,
+    shadowColor: theme.colors.blueDark,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: theme.fonts.bold,
-    color: theme.colors.textDark,
+    color: theme.colors.orange,
     marginVertical: 5,
   },
   description: {
@@ -46,16 +46,10 @@ const styles = StyleSheet.create({
     color: theme.colors.text,
     marginVertical: 5,
   },
-  body: {
-    fontSize: 14,
-    fontWeight: theme.fonts.medium,
-    color: theme.colors.textLight,
-    marginVertical: 5,
-  },
   sport: {
     fontSize: 14,
-    fontStyle: 'italic',
-    color: theme.colors.blueDark,
+    fontWeight: theme.fonts.bold,
+    color: theme.colors.orange,
     marginVertical: 5,
   },
   date: {
@@ -65,7 +59,7 @@ const styles = StyleSheet.create({
   },
   author: {
     fontSize: 12,
-    color: theme.colors.textLight,
+    color: theme.colors.blueDark,
     marginVertical: 5,
     textAlign: 'right',
   },
