@@ -1,6 +1,5 @@
 import { Alert, View, Text, TouchableWithoutFeedback, Keyboard, ImageBackground, StyleSheet, Pressable } from 'react-native';
 import React, { useRef, useState } from 'react';
-import * as SecureStore from 'expo-secure-store';
 import BackButton from '../components/BackButton';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -50,7 +49,7 @@ const SignUp = () => {
                 Alert.alert('Inscription', 'Utilisateur créé avec succès !', [
                     {
                         text: 'OK',
-                        onPress: () => router.push('/login')
+                        onPress: () => router.push('/creation_profil_1')
                     }
                 ]);
             } else {
