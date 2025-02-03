@@ -61,7 +61,7 @@ const upload = multer({
 // Lancer le serveur
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Serveur lancé sur \x1b[36m%s\x1b[0m`, `http://10.134.200.135:${PORT}`);
+  console.log(`Serveur lancé sur \x1b[36m%s\x1b[0m`, `http://16.171.155.129:${PORT}`);
 });
 
 //------------------------------------------
