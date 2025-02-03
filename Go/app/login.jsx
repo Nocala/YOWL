@@ -53,7 +53,7 @@ const Login = () => {
                 ]);
                 
                 // 🔴 La redirection est mise en pause pour l'instant
-                // router.push('/home');
+                ///router.push('/home');
             } else {
                 Alert.alert('Login', data.error || 'Erreur de connexion');
             }
