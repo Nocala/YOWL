@@ -60,7 +60,7 @@ const création_profil_1 = ({size=60}) => {
                   </View>
                 ))}
               </View>
-              <Button title='Suivant' />
+              <Button title='Suivant' onPress={()=> router.push('creation_profil_2')}/>
           </View>
       </ScreenWrapper>
     </ImageBackground>
