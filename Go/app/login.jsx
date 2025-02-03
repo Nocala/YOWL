@@ -1,13 +1,14 @@
-import { Alert, ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native'
-import React, { useRef, useState } from 'react'
-import ScreenWrapper from '../components/SreenWrapper'
-import { StatusBar } from 'expo-status-bar'
-import BackButton from '../components/BackButton'
-import { useRouter } from 'expo-router'
-import { hp, wp } from '../helpers/common'
-import { theme } from '../constants/theme'
-import Input from '../components/Input'
-import Button from '../components/Button'
+import { Alert, ImageBackground, Pressable, StyleSheet, Text, View, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, { useRef, useState } from 'react';
+import * as SecureStore from 'expo-secure-store';
+import ScreenWrapper from '../components/SreenWrapper';
+import { StatusBar } from 'expo-status-bar';
+import BackButton from '../components/BackButton';
+import { useRouter } from 'expo-router';
+import { hp, wp } from '../helpers/common';
+import { theme } from '../constants/theme';
+import Input from '../components/Input';
+import Button from '../components/Button';
 
 const Login = () => {
     const router = useRouter();
@@ -17,7 +18,7 @@ const Login = () => {
 
     const onSubmit = async () => {
         if (!emailRef.current || !passwordRef.current) {
-            Alert.alert('Login', "please fill all the fields!");
+            Alert.alert('Login', "Veuillez remplir tous les champs !");
             return;
         }
 
@@ -38,12 +39,22 @@ const Login = () => {
             const data = await response.json();
 
             if (response.ok) {
-                // Connexion réussie, rediriger l'utilisateur ou stocker le token JWT
-                Alert.alert('Login', 'Connexion réussie !');
-                // Exemple de redirection :
+                // Stocker le token de manière sécurisée avec expo-secure-store
+                await SecureStore.setItemAsync("authToken", data.token);
+
+                // Vérification en console
+                const storedToken = await SecureStore.getItemAsync("authToken");
+                console.log("Token stocké avec succès :", storedToken);
+                Alert.alert('Login', 'Connexion réussie !', [
+                    {
+                        text: 'OK',
+                        //onPress: () => router.push('/home')
+                    }
+                ]);
+                
+                // 🔴 La redirection est mise en pause pour l'instant
                 // router.push('/home');
             } else {
-                // Afficher un message d'erreur
                 Alert.alert('Login', data.error || 'Erreur de connexion');
             }
         } catch (error) {
@@ -54,52 +65,66 @@ const Login = () => {
     };
 
     return (
-        <ImageBackground source={require('../assets/images/background_login.png')}
-            style={styles.background}>
-            <ScreenWrapper>
-                <StatusBar style='dark' />
-                <View style={styles.container}>
-                    <BackButton router={router} />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.container}>
+                <ImageBackground source={require('../assets/images/background_login.png')}
+                    style={styles.background}>
+                        <ScreenWrapper>
+                            <StatusBar style='dark' />
+                            <View style={styles.innerContainer}>
+                                <BackButton router={router} />
 
-                    {/* Welcome */}
-                    <View>
-                        <Text style={styles.welcomText}>Hey,</Text>
-                        <Text style={styles.welcomText}>welcome back !</Text>
-                    </View>
+                                {/* Welcome */}
+                                <View>
+                                    <Text style={styles.welcomText}>Hey,</Text>
+                                    <Text style={styles.welcomText}>welcome back !</Text>
+                                </View>
 
-                    {/* form */}
-                    <View style={styles.form}>
-                        <Input
-                            placeholder="Email"
-                            onChangeText={value => emailRef.current = value}
-                        />
-                        <Input
-                            placeholder='Mot de passe'
-                            secureTextEntry
-                            onChangeText={value => passwordRef.current = value}
-                        />
-                        <Text style={styles.forgotPassword}>
-                            Mot de passe oublié ?
-                        </Text>
-                        {/* button login */}
-                        <Button title='Login' loading={loading} onPress={onSubmit} />
-                    </View>
-                    {/* footer */}
-                    <View style={styles.footer}>
-                        <Text style={styles.footerText}>
-                            Tu n'as pas de compte ?
-                        </Text>
-                        <Pressable onPress={() => router.push('signUp')}>
-                            <Text style={[styles.footerText, { color: theme.colors.orange, fontWeight: theme.fonts.semibold }]}>Inscrit toi ici !</Text>
-                        </Pressable>
-                    </View>
-                </View>
-            </ScreenWrapper>
-        </ImageBackground>
-    )
-}
+                                {/* Form */}
+                                <View style={styles.form}>
+                                    <Input
+                                        ref={emailRef}
+                                        placeholder="Email"
+                                        keyboardType="email-address" // Mode connexion pour email
+                                        autoCapitalize="none"
+                                        autoCorrect={false}
+                                        onChangeText={value => emailRef.current = value}
+                                    />
+                                    <Input
+                                        ref={passwordRef}
+                                        placeholder='Mot de passe'
+                                        secureTextEntry // Mode connexion pour mot de passe
+                                        autoCapitalize="none"
+                                        autoCorrect={false}
+                                        onChangeText={value => passwordRef.current = value}
+                                    />
+                                    <Text style={styles.forgotPassword}>
+                                        Mot de passe oublié ?
+                                    </Text>
+                                    {/* Button login */}
+                                    <Button title='Login' loading={loading} onPress={onSubmit} />
+                                </View>
 
-export default Login
+                                {/* Footer */}
+                                <View style={styles.footer}>
+                                    <Text style={styles.footerText}>
+                                        Tu n'as pas de compte ?
+                                    </Text>
+                                    <Pressable onPress={() => router.push('signUp')}>
+                                        <Text style={[styles.footerText, { color: theme.colors.orange, fontWeight: theme.fonts.semibold }]}>
+                                            Inscris-toi ici !
+                                        </Text>
+                                    </Pressable>
+                                </View>
+                            </View>
+                        </ScreenWrapper>
+                </ImageBackground>
+            </View>
+        </TouchableWithoutFeedback>
+    );
+};
+
+export default Login;
 
 const styles = StyleSheet.create({
     ScreenWrapper: {
@@ -114,6 +139,9 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     container: {
+        flex: 1,
+    },
+    innerContainer: {
         gap: 20,
         padding: wp(5),
         backgroundColor: theme.colors.whiteorange,
@@ -149,4 +177,4 @@ const styles = StyleSheet.create({
     backButton: {
         marginBottom: 5, // Réduisez cette valeur pour diminuer l'espace en dessous du BackButton
     }
-})
+});
