@@ -35,8 +35,8 @@ const styles = StyleSheet.create({
         justifyContent: "space-around",
         paddingVertical: 20,
         backgroundColor: theme.colors.whiteorange,
-        borderTopWidth: 1,
-        borderTopColor: theme.colors.darkLight,
+        borderTopWidth: 0.2,
+        borderTopColor: theme.colors.gray,
     },
     iconContainer: {
         alignItems: 'center',

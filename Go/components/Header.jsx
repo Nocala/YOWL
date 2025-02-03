@@ -1,13 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { theme } from '../constants/theme';
 import User from '../assets/icons/User';
 import Message from '../assets/icons/Message';
+import Logo from '../assets/images/LogoGo.png';
 
 const Header = () => {
     return (
         <View style={styles.container}>
-            <Text style={styles.logo}>MyApp</Text>
+            <Image source={Logo} style={styles.logo} />
             <View style={styles.icons}>
                 <TouchableOpacity style={styles.icon}>
                     <Message strokeWidth={1.5} color={theme.colors.textDark} />
@@ -27,11 +29,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 16,
         backgroundColor: theme.colors.whiteorange,
+        borderBottomWidth: 0.2,
+        borderBottomColor: theme.colors.gray,
     },
     logo: {
-        fontSize: 24,
-        fontWeight: theme.fonts.bold,
-        color: theme.colors.primary,
+        width: 40,
+        height: 40, 
+        resizeMode: 'contain',
     },
     icons: {
         flexDirection: 'row',
@@ -41,4 +45,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Header
+export default Header;
