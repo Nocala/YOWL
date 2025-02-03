@@ -22,6 +22,9 @@ const SignUp = () => {
         if(!emailRef.current || !passwordRef.current || !usernameRef.current || !confirmationpasswordRef.current){
             Alert.alert('Sign Up', "please fill all the fields!")
         }
+        else{
+            router.push('creation_profil_1')
+        }
     }
   return (
     <ImageBackground source={require('../assets/images/background_login.png')}
