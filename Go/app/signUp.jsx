@@ -50,7 +50,7 @@ const SignUp = () => {
                 Alert.alert('Inscription', 'Utilisateur créé avec succès !', [
                     {
                         text: 'OK',
-                        onPress: () => router.push('/home')
+                        onPress: () => router.push('/login')
                     }
                 ]);
             } else {
