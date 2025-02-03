@@ -20,9 +20,15 @@ const création_profil_1 = ({size=60}) => {
               {/* Logo */}
               <Image style={styles.logo} resizeMode='contain' source={require('../assets/images/LogoGo.png')} />
               {/* Avatar */}
+              <Text style={styles.TitleText}>
+                Choisis ta photo de profil :
+              </Text>
               <View style={styles.circle}>
                 <Icon name="plus" strokeWidth={2.5} size={size} color={theme.colors.orange} />
               </View>
+              <Text style={styles.TitleText}>
+                Sélectionne les sports que tu pratique : 
+              </Text>
           </View>
       </ScreenWrapper>
     </ImageBackground>
@@ -63,9 +69,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-      welcomText:{
-          fontSize: hp(4),
-          fontWeight: theme.fonts.bold,
+      TitleText:{
+          fontSize: hp(2),
+          fontWeight: theme.fonts.semibold,
           color: theme.colors.orange
     },
 })
