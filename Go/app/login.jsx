@@ -64,14 +64,11 @@ const Login = () => {
                     {/* Welcome */}
                     <View>
                         <Text style={styles.welcomText}>Hey,</Text>
-                        <Text style={styles.welcomText}>Welcome Back</Text>
+                        <Text style={styles.welcomText}>welcome back !</Text>
                     </View>
 
                     {/* form */}
                     <View style={styles.form}>
-                        <Text style={{ fontSize: hp(1.5), color: theme.colors.text }}>
-                            Please login to continue
-                        </Text>
                         <Input
                             placeholder="Email"
                             onChangeText={value => emailRef.current = value}
@@ -105,6 +102,10 @@ const Login = () => {
 export default Login
 
 const styles = StyleSheet.create({
+    ScreenWrapper: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     background: {
         flex: 1,
         justifyContent: 'center',
@@ -113,17 +114,18 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     container: {
-        flex: 1,
-        gap: 45,
+        gap: 20,
         padding: wp(5),
         backgroundColor: theme.colors.whiteorange,
-        borderRadius: theme.radius.xxl
-
+        borderRadius: theme.radius.xxl,
+        alignSelf: 'center',
+        justifyContent: 'center', 
+        maxHeight: '70%',
     },
     welcomText: {
         fontSize: hp(4),
         fontWeight: theme.fonts.bold,
-        color: theme.colors.orange
+        color: theme.colors.orange,
     },
     form: {
         gap: 25,
@@ -143,5 +145,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: theme.colors.text,
         fontSize: hp(1.6)
+    },
+    backButton: {
+        marginBottom: 5, // Réduisez cette valeur pour diminuer l'espace en dessous du BackButton
     }
 })
