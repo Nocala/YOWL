@@ -48,12 +48,10 @@ const Login = () => {
                 Alert.alert('Login', 'Connexion réussie !', [
                     {
                         text: 'OK',
-                        //onPress: () => router.push('/home')
+                        onPress: () => router.push('/home')
                     }
                 ]);
                 
-                // 🔴 La redirection est mise en pause pour l'instant
-                ///router.push('/home');
             } else {
                 Alert.alert('Login', data.error || 'Erreur de connexion');
             }
