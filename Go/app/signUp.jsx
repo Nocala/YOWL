@@ -8,6 +8,7 @@ import { hp, wp } from '../helpers/common';
 import { theme } from '../constants/theme';
 import ScreenWrapper from '../components/SreenWrapper';
 import { StatusBar } from 'expo-status-bar';
+import * as SecureStore from 'expo-secure-store';
 
 const SignUp = () => {
     const router = useRouter();
@@ -16,6 +17,7 @@ const SignUp = () => {
     const passwordRef = useRef("");
     const confirmPasswordRef = useRef("");
     const [loading, setLoading] = useState(false);
+    const [userId, setUserId] = useState(null);
 
     const onSubmit = async () => {
         if (!usernameRef.current || !emailRef.current || !passwordRef.current || !confirmPasswordRef.current) {
@@ -46,6 +48,11 @@ const SignUp = () => {
             const data = await response.json();
 
             if (response.ok) {
+                setUserId(data.userId);
+                await SecureStore.setItemAsync('userId', data.userId.toString());
+                await SecureStore.setItemAsync('username', usernameRef.current);
+                console.log('User ID:', data.userId);
+                console.log('Username:', usernameRef.current);
                 Alert.alert('Inscription', 'Utilisateur créé avec succès !', [
                     {
                         text: 'OK',
@@ -53,10 +60,10 @@ const SignUp = () => {
                     }
                 ]);
             } else {
-                Alert.alert('Inscription', data.error || 'Erreur lors de l\'inscription');
+                Alert.alert('Inscription', data.message || 'Une erreur est survenue.');
             }
         } catch (error) {
-            Alert.alert('Inscription', 'Erreur lors de l\'inscription');
+            Alert.alert('Inscription', 'Une erreur est survenue.');
         } finally {
             setLoading(false);
         }
