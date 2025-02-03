@@ -1,30 +1,38 @@
 import * as React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+import { theme } from '../constants/theme';
+
 import Home from "../assets/icons/Home";
 import Search from "../assets/icons/Search";
 import Basketball from "../assets/icons/Basket-ball_Ball";
 import News from "../assets/icons/News";
 import Reels from "../assets/icons/Reels";
-import { theme } from '../constants/theme';
 
 const Footer = () => {
+    const router = useRouter();
+
     return (
         <View style={styles.footer}>
-            <View style={styles.iconContainer}>
+            <TouchableOpacity style={styles.iconContainer} onPress={() => router.push('/home')}>
                 <Home strokeWidth={1.5} color={theme.colors.blueDark} />
-            </View>
-            <View style={styles.iconContainer}>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.iconContainer} onPress={() => router.push('/search')}>
                 <Search strokeWidth={1.5} color={theme.colors.blueDark} />
-            </View>
-            <View style={[styles.iconContainer, styles.basketballContainer]}>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={[styles.iconContainer, styles.basketballContainer]} onPress={() => router.push('/events')}>
                 <Basketball strokeWidth={1.5} color={theme.colors.orange} />
-            </View>
-            <View style={styles.iconContainer}>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.iconContainer} onPress={() => router.push('/news')}>
                 <News strokeWidth={1.5} color={theme.colors.blueDark} />
-            </View>
-            <View style={styles.iconContainer}>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.iconContainer} onPress={() => router.push('/reels')}>
                 <Reels strokeWidth={1.5} color={theme.colors.blueDark} />
-            </View>
+            </TouchableOpacity>
         </View>
     );
 };
