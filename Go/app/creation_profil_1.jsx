@@ -8,15 +8,34 @@ import { hp, wp } from '../helpers/common';
 import BackButton from '../components/BackButton';
 import Icon from '../assets/icons/Index';
 import Button from '../components/Button';
+import * as SecureStore from 'expo-secure-store';
 
 const création_profil_1 = ({size=60}) => {
     const router = useRouter();
     const [sports, setSports] = useState([]);
+    const [userId, setUserId] = useState(null);
+
+    useEffect(() => {
+      const fetchUserId = async () => {
+        const storedUserId = await SecureStore.getItemAsync('userId');
+        if (storedUserId) {
+          setUserId(storedUserId);
+          console.log('User ID in création_profil_1:', storedUserId);
+        }
+      };
+
+      fetchUserId();
+    }, []);
 
     useEffect(() => {
       const fetchSports = async () => {
         try {
-          const response = await fetch('http://16.171.155.129:3000/sports');
+          const response = await fetch('http://16.171.155.129:3000/sports', {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
           const data = await response.json();
           if (response.ok) {
             console.log('Sports fetched successfully:', data);

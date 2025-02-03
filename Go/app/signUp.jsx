@@ -1,6 +1,5 @@
 import { Alert, View, Text, TouchableWithoutFeedback, Keyboard, ImageBackground, StyleSheet, Pressable } from 'react-native';
 import React, { useRef, useState } from 'react';
-import * as SecureStore from 'expo-secure-store';
 import BackButton from '../components/BackButton';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -9,6 +8,7 @@ import { hp, wp } from '../helpers/common';
 import { theme } from '../constants/theme';
 import ScreenWrapper from '../components/SreenWrapper';
 import { StatusBar } from 'expo-status-bar';
+import * as SecureStore from 'expo-secure-store';
 
 const SignUp = () => {
     const router = useRouter();
@@ -17,13 +17,55 @@ const SignUp = () => {
     const passwordRef = useRef("");
     const confirmPasswordRef = useRef("");
     const [loading, setLoading] = useState(false);
+    const [userId, setUserId] = useState(null);
 
-    const onSubmit = ()=>{
-        if(!emailRef.current || !passwordRef.current || !usernameRef.current || !confirmationpasswordRef.current){
-            Alert.alert('Sign Up', "please fill all the fields!")
+    const onSubmit = async () => {
+        if (!usernameRef.current || !emailRef.current || !passwordRef.current || !confirmPasswordRef.current) {
+            Alert.alert('Inscription', "Veuillez remplir tous les champs !");
+            return;
         }
-        {
-            router.push('creation_profil_1')
+
+        if (passwordRef.current !== confirmPasswordRef.current) {
+            Alert.alert('Inscription', "Les mots de passe ne correspondent pas !");
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await fetch('http://16.171.155.129:3000/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: usernameRef.current,
+                    email: emailRef.current,
+                    password: passwordRef.current,
+                }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setUserId(data.userId);
+                await SecureStore.setItemAsync('userId', data.userId.toString());
+                await SecureStore.setItemAsync('username', usernameRef.current);
+                console.log('User ID:', data.userId);
+                console.log('Username:', usernameRef.current);
+                Alert.alert('Inscription', 'Utilisateur créé avec succès !', [
+                    {
+                        text: 'OK',
+                        onPress: () => router.push('/creation_profil_1')
+                    }
+                ]);
+            } else {
+                Alert.alert('Inscription', data.message || 'Une erreur est survenue.');
+            }
+        } catch (error) {
+            Alert.alert('Inscription', 'Une erreur est survenue.');
+        } finally {
+            setLoading(false);
         }
     };
 
