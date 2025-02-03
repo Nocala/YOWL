@@ -18,48 +18,12 @@ const SignUp = () => {
     const confirmPasswordRef = useRef("");
     const [loading, setLoading] = useState(false);
 
-    const onSubmit = async () => {
-        if (!usernameRef.current || !emailRef.current || !passwordRef.current || !confirmPasswordRef.current) {
-            Alert.alert('Inscription', "Veuillez remplir tous les champs !");
-            return;
+    const onSubmit = ()=>{
+        if(!emailRef.current || !passwordRef.current || !usernameRef.current || !confirmationpasswordRef.current){
+            Alert.alert('Sign Up', "please fill all the fields!")
         }
-
-        if (passwordRef.current !== confirmPasswordRef.current) {
-            Alert.alert('Inscription', "Les mots de passe ne correspondent pas !");
-            return;
-        }
-
-        setLoading(true);
-
-        try {
-            const response = await fetch('http://16.171.155.129:3000/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: usernameRef.current,
-                    email: emailRef.current,
-                    password: passwordRef.current,
-                }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                Alert.alert('Inscription', 'Utilisateur créé avec succès !', [
-                    {
-                        text: 'OK',
-                        onPress: () => router.push('/login')
-                    }
-                ]);
-            } else {
-                Alert.alert('Inscription', data.error || 'Erreur lors de l\'inscription');
-            }
-        } catch (error) {
-            Alert.alert('Inscription', 'Erreur lors de l\'inscription');
-        } finally {
-            setLoading(false);
+        {
+            router.push('creation_profil_1')
         }
     };
 
