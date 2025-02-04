@@ -856,15 +856,24 @@ app.get('/sports/:id', (req, res) => {
 //------------------------------------------
 // Route pour créer un profil (étape 1 sur 2)
 app.post('/profil-1-2', upload.single('photo_profil'), (req, res) => {
-  console.log('Corps de la requête:', req.body);
-  console.log('Fichier:', req.file);
+  console.log("🚀 Requête reçue sur /profil-1-2 !");
+  console.log("Body reçu:", req.body);
+  console.log("Fichier reçu:", req.file);
 
   const { username, sports_pratiques } = req.body;
 
+  // Vérification de la présence du fichier et des données
   if (!username || !sports_pratiques) {
+    console.log("❌ Données manquantes :", req.body);
     return res.status(400).json({ error: 'Username et sports_pratiques sont requis' });
   }
 
+  if (!req.file) {
+    console.log("❌ Aucune image reçue !");
+    return res.status(400).json({ error: 'Image de profil requise' });
+  }
+
+  // Tentative de parsing des sports_pratiques
   let parsedSportsPratiques;
   try {
     parsedSportsPratiques = JSON.parse(sports_pratiques);
@@ -872,10 +881,7 @@ app.post('/profil-1-2', upload.single('photo_profil'), (req, res) => {
     return res.status(400).json({ error: 'sports_pratiques doit être un tableau JSON valide' });
   }
 
-  let photo_profil = null;
-  if (req.file) {
-    photo_profil = `/uploads/${req.file.filename}`;
-  }
+  let photo_profil = `/uploads/${req.file.filename}`;
 
   // Récupérer l'user_id à partir de l'username
   const getUserQuery = 'SELECT user_id FROM USERS WHERE username = ?';

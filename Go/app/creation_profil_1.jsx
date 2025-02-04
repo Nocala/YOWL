@@ -82,6 +82,10 @@ const creation_profil_1 = ({ size = 60 }) => {
   };
 
   const handleSubmit = async () => {
+    console.log("=== DEBUG AVANT ENVOI ===");
+    console.log("User ID:", userId);
+    console.log("Image sélectionnée:", selectedImage ? selectedImage.uri : "Aucune image");
+    console.log("Sports sélectionnés:", Object.keys(selectedSports).filter((id) => selectedSports[id]));
     if (!userId) {
       alert("Erreur : Username introuvable.");
       return;
@@ -90,40 +94,47 @@ const creation_profil_1 = ({ size = 60 }) => {
       alert("Veuillez sélectionner une image.");
       return;
     }
+
+    const sportsArray = Object.keys(selectedSports).filter((id) => selectedSports[id]);
+
     if (sportsArray.length === 0) {
       alert("Veuillez sélectionner au moins un sport.");
       return;
     }
 
-    const sportsArray = Object.keys(selectedSports).filter((id) => selectedSports[id]);
-    const formData = new FormData();
+    // Transformation des IDs en noms de sports
+    const sportsNames = sportsArray.map(id => {
+      const sport = sports.find(sport => sport.id_sport === parseInt(id));
+      return sport ? sport.name : null;
+    });
 
+    const formData = new FormData();
     formData.append("username", userId);
-    formData.append("sports_pratiques", JSON.stringify(sportsArray));
+    formData.append("sports_pratiques", JSON.stringify(sportsNames)); // Envoi des noms au lieu des IDs
     formData.append("photo_profil", {
       uri: selectedImage.uri,
       type: selectedImage.mimeType,
       name: `profile_${userId}.${selectedImage.uri.split('.').pop()}`
     });
-    console.log("Sports sélectionnés :", selectedSports);
-
     console.log("Données envoyées :", JSON.stringify({
       username: userId,
-      sports_pratiques: sportsArray,
+      sports_pratiques: sportsNames, // Affichage des noms ici aussi
     }));
 
     try {
+      console.log("Envoi des données à l'API...");
+    
       const response = await fetch('http://16.171.155.129:3000/profil-1-2', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
         body: formData,
       });
-
+    
       const data = await response.json();
+      console.log("Réponse de l'API depuis l'appli:", data);
+    
       if (response.ok) {
-        alert("Profil créé avec succès !");
+        //alert("Profil créé avec succès !");
+        console.log("Navigation vers creation_profil_2...");
         router.push('creation_profil_2');
       } else {
         alert(data.error || "Erreur lors de la création du profil.");
