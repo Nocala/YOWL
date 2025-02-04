@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { theme } from '../constants/theme';
 
 const Event = ({ name, date, lieu, sport, genre, nb_participants, nb_participants_max, description, id_media }) => {
+  const [imageUrl, setImageUrl] = useState(null);
+
+  useEffect(() => {
+    if (id_media) {
+      fetch(`http://16.171.155.129:3000/media/id/${id_media}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.filepath) {
+            setImageUrl(`http://16.171.155.129:3000${data.filepath}`);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching media:', error);
+        });
+    }
+  }, [id_media]);
+
   return (
     <View style={styles.eventContainer}>
       <Text style={styles.eventName}>{name}</Text>
@@ -12,7 +29,7 @@ const Event = ({ name, date, lieu, sport, genre, nb_participants, nb_participant
       <Text style={styles.eventText}>Genre: {genre}</Text>
       <Text style={styles.eventText}>Participants: {nb_participants}/{nb_participants_max}</Text>
       <Text style={styles.eventText}>Description: {description}</Text>
-      {id_media && <Image source={{ uri: `/path/to/media/${id_media}` }} style={styles.eventImage} />}
+      {imageUrl && <Image source={{ uri: imageUrl }} style={styles.eventImage} />}
     </View>
   );
 };
