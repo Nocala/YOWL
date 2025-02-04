@@ -123,7 +123,7 @@ app.post('/login', (req, res) => {
 
       console.log('Creating token for user:', user); // Log user details
 
-      const token = jwt.sign({ id: user.user_id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
+      const token = jwt.sign({ id: user.user_id, email: user.email, role: user.role }, JWT_SECRET);
 
       res.json({ token });
     });
@@ -825,5 +825,91 @@ app.get('/sports/:id', (req, res) => {
     }
 
     res.json(results[0]);
+  });
+});
+
+
+//------------------------------------------
+// Route pour créer un profil (étape 1 sur 2)
+app.post('/profil-1-2', upload.single('photo_profil'), (req, res) => {
+  console.log('Corps de la requête:', req.body);
+  console.log('Fichier:', req.file);
+
+  const { username, sports_pratiques } = req.body;
+
+  if (!username || !sports_pratiques) {
+    return res.status(400).json({ error: 'Username et sports_pratiques sont requis' });
+  }
+
+  let parsedSportsPratiques;
+  try {
+    parsedSportsPratiques = JSON.parse(sports_pratiques);
+  } catch (error) {
+    return res.status(400).json({ error: 'sports_pratiques doit être un tableau JSON valide' });
+  }
+
+  let photo_profil = null;
+  if (req.file) {
+    photo_profil = `/uploads/${req.file.filename}`;
+  }
+
+  // Récupérer l'user_id à partir de l'username
+  const getUserQuery = 'SELECT user_id FROM USERS WHERE username = ?';
+  db.query(getUserQuery, [username], (err, userResults) => {
+    if (err) {
+      console.error('Erreur lors de la récupération de l\'user_id:', err);
+      return res.status(500).json({ error: 'Erreur interne' });
+    }
+
+    if (userResults.length === 0) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé' });
+    }
+
+    const user_id = userResults[0].user_id;
+
+    const insertMediaQuery = `
+      INSERT INTO MEDIAS (filepath, user_id) VALUES (?, ?)
+    `;
+
+    db.query(insertMediaQuery, [photo_profil, user_id], (err, mediaResults) => {
+      if (err) {
+        console.error('Erreur lors de l\'insertion du média:', err);
+        return res.status(500).json({ error: 'Erreur lors de l\'insertion du média' });
+      }
+
+      const mediaId = mediaResults.insertId;
+
+      const insertProfileQuery = `
+        INSERT INTO PROFIL (username, photo_profil, sports_pratiqués) VALUES (?, ?, ?)
+      `;
+
+      db.query(insertProfileQuery, [username, mediaId, JSON.stringify(parsedSportsPratiques)], (err, profileResults) => {
+        if (err) {
+          console.error('Erreur lors de la création du profil:', err);
+          return res.status(500).json({ error: 'Erreur lors de la création du profil' });
+        }
+
+        res.status(201).json({ message: 'Profil créé avec succès', profilId: profileResults.insertId });
+      });
+    });
+  });
+});
+
+// Route pour créer un profil (étape 2 sur 2)
+app.put('/profil-2-2/', (req, res) => {
+  const { sports_suivis, username} = req.body;
+
+  if (!username) {
+    return res.status(400).json({ error: 'Username requis' });
+  }
+
+  const query = 'UPDATE PROFIL SET sports_suivis = ? WHERE username = ?';
+  db.query(query, [JSON.stringify(sports_suivis), username], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la mise à jour du profil:', err);
+      return res.status(500).json({ error: 'Erreur lors de la mise à jour du profil' });
+    }
+
+    res.status(200).json({ message: 'Profil mis à jour avec succès' });
   });
 });
