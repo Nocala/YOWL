@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { theme } from '../constants/theme';
+import Button from '../components/Button';
+
 
 const Event = ({ name, date, lieu, sport, genre, nb_participants, nb_participants_max, description, id_media }) => {
   const [imageUrl, setImageUrl] = useState(null);
@@ -15,13 +17,38 @@ const Event = ({ name, date, lieu, sport, genre, nb_participants, nb_participant
   return (
     <View style={styles.eventContainer}>
       <Text style={styles.eventName}>{name}</Text>
-      <Text style={styles.eventText}>Date: {date}</Text>
-      <Text style={styles.eventText}>Lieu: {lieu}</Text>
-      <Text style={styles.eventText}>Sport: {sport}</Text>
-      <Text style={styles.eventText}>Genre: {genre}</Text>
-      <Text style={styles.eventText}>Participants: {nb_participants}/{nb_participants_max}</Text>
-      <Text style={styles.eventText}>Description: {description}</Text>
+
       {imageUrl && <Image source={{ uri: imageUrl }} style={styles.eventImage} />}
+
+      <Text style={styles.eventSport}>{sport}</Text>
+
+      <Text style={styles.eventDesc}>Description : {description}</Text>
+
+      <Text style={styles.eventDate}>Le {date}</Text>
+
+      <Text style={styles.eventLieu}>A {lieu}</Text>
+
+      <Text style={styles.eventGenre}>Genre :
+        <Text style={styles.variable}> {genre}</Text>  
+      </Text>
+
+      <Text style={styles.eventPart}>Participants : 
+        <Text style={styles.variable}> {nb_participants}/{nb_participants_max}</Text>  
+      </Text>
+
+      <View style={styles.buttonContainer}>
+        <Button 
+            title="Je veux participer" 
+            textStyle={styles.buttonText} 
+            onPress={() => { /* action pour participer */ }} />
+
+        <Button 
+            title="Inviter un ami" 
+            buttonStyle={styles.inviteButton} 
+            textStyle={[styles.inviteButtonText, styles.buttonText]} 
+            onPress={() => { /* action pour inviter un ami */ }}  />
+
+      </View>
     </View>
   );
 };
@@ -38,11 +65,14 @@ const styles = StyleSheet.create({
   eventName: {
     fontSize: 18,
     fontWeight: theme.fonts.bold,
-    color: theme.colors.primaryDark,
+    color: theme.colors.orange,
   },
-  eventText: {
-    color: theme.colors.text,
-    marginBottom: 5,
+  eventSport: {
+    fontSize: 18,
+    fontWeight: theme.fonts.bold,
+    color: theme.colors.orange,
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   eventImage: {
     width: '100%',
@@ -50,6 +80,47 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: theme.radius.sm,
   },
+    eventDesc: {
+        fontSize: 16,
+        color: theme.colors.blueDark,
+        paddingBottom: 10,
+    },
+    eventDate: {
+        fontSize: 16,
+        color: theme.colors.blueDark,
+        paddingBottom: 10,
+    },
+    eventLieu: {
+        fontSize: 16,
+        color: theme.colors.blueDark,
+        paddingBottom: 10,
+    },
+    eventGenre: {
+        fontSize: 16,
+        color: theme.colors.blueDark,
+        paddingBottom: 10,
+    },
+    eventPart: {
+        fontSize: 16,
+        color: theme.colors.blueDark,
+    },
+    variable: {
+        fontWeight: 'bold',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 10,
+    },
+    inviteButton: {
+        backgroundColor: theme.colors.whiteorange,
+        borderColor: theme.colors.orange,
+        borderWidth: 1,
+    },
+    inviteButtonText: {
+        color: theme.colors.orange,
+    },
+    
 });
 
 export default Event;

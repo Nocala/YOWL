@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import Event from '../../components/Event';
+import ScreenWrapper from '../../components/SreenWrapper';
+import { theme } from '../../constants/theme';
+import Header from '../../components/Header';
+import Footer from '../../components/Footer';
 
 const EventsPage = () => {
   const [events, setEvents] = useState([]);
@@ -28,49 +32,56 @@ const EventsPage = () => {
     );
   }
 
-  if (error) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text>Error: {error.message}</Text>
-      </View>
-    );
-  }
-
   return (
-    <ScrollView style={styles.container}>
-      {events.map(event => (
-        <Event
-          key={event.id_event}
-          name={event.name}
-          date={event.date}
-          lieu={event.lieu}
-          sport={event.sport}
-          genre={event.genre}
-          nb_participants={event.nb_participants}
-          nb_participants_max={event.nb_participants_max}
-          description={event.description}
-          id_media={event.id_media}
-        />
-      ))}
-    </ScrollView>
+    <ScreenWrapper bg={theme.colors.whiteorange}>
+      <View style={styles.container}>
+        <Header />
+        <ScrollView contentContainerStyle={styles.scrollView}>
+          {error ? (
+            <Text style={styles.errorText}>Error: {error.message}</Text>
+          ) : (
+            events.map(event => (
+              <Event
+                key={event.id_event}
+                name={event.name}
+                date={event.date}
+                lieu={event.lieu}
+                sport={event.sport}
+                genre={event.genre}
+                nb_participants={event.nb_participants}
+                nb_participants_max={event.nb_participants_max}
+                description={event.description}
+                id_media={event.id_media}
+              />
+            ))
+          )}
+        </ScrollView>
+        <Footer />
+      </View>
+    </ScreenWrapper>
   );
 };
-
-export default EventsPage;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    backgroundColor: theme.colors.whiteorange,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: theme.colors.whiteorange,
   },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  scrollView: {
+    padding: 10,
+    paddingBottom: 80, // To avoid content being hidden behind the footer
+  },
+  errorText: {
+    color: theme.colors.rose,
+    textAlign: 'center',
+    marginTop: 20,
   },
 });
+
+export default EventsPage;

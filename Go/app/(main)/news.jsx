@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, ScrollView, View } from 'react-native'
+import ScreenWrapper from '../../components/SreenWrapper';
 import Article from '../../components/Article'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
@@ -23,25 +24,27 @@ const News = () => {
   }, [])
 
   return (
-    <View style={styles.container}>
-      <Header />
-      <ScrollView style={styles.scrollView}>
-        {articles.map(article => (
-          <Article
-            key={article.id_article}
-            id_article={article.id_article}
-            title={article.titre}
-            description={article.description}
-            body={article.corps}
-            sport={article.sport}
-            date={article.date}
-            id_media={article.id_media}
-            author={article.auteur}
-          />
-        ))}
-      </ScrollView>
-      <Footer />
-    </View>
+    <ScreenWrapper bg={theme.colors.whiteorange}>
+      <View style={styles.container}>
+        <Header />
+        <ScrollView style={styles.scrollView}>
+          {articles.map(article => (
+            <Article
+              key={article.id_article}
+              id_article={article.id_article}
+              title={article.titre}
+              description={article.description}
+              body={article.corps}
+              sport={article.sport}
+              date={article.date}
+              id_media={article.id_media}
+              author={article.auteur}
+            />
+          ))}
+        </ScrollView>
+        <Footer />
+      </View>
+    </ScreenWrapper>
   )
 }
 
