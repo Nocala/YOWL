@@ -45,7 +45,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     icon: {
-        marginLeft: 20,
+        marginLeft: 30,
+        transform: [{ scale: 1.3 }], // Increase the size of the basketball icon
     },
 });
 
