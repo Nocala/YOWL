@@ -1,37 +1,46 @@
-import { Image, ImageBackground, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { useRouter } from 'expo-router'
+import { StyleSheet, Text, View, ImageBackground, Image, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import ScreenWrapper from '../components/SreenWrapper';
+import BackButton from '../components/BackButton';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../constants/theme';
 import { hp, wp } from '../helpers/common';
-import BackButton from '../components/BackButton';
+import { useRouter } from 'expo-router';
 import Button from '../components/Button';
 
-const creation_profil_2 = () => {
-    const router = useRouter();
-        const [sports, setSports] = useState([]);
-    
-        useEffect(() => {
-          const fetchSports = async () => {
-            try {
-              const response = await fetch('http://16.171.155.129:3000/sports');
-              const data = await response.json();
-              if (response.ok) {
-                console.log('Sports fetched successfully:', data);
-                setSports(data);
-              } else {
-                console.error('Failed to fetch sports:', data);
-                setSports([]);
-              }
-            } catch (error) {
-              console.error('Error fetching sports:', error);
-              setSports([]);
-            }
-          };
-      
-          fetchSports();
-        }, []);
+const creation_profil_2 = ({}) => {
+  const router = useRouter();
+  const [sports, setSports] = useState([]);
+  const [selectedSports, setSelectedSports] = useState({});
+
+  useEffect(() => {
+    const fetchSports = async () => {
+      try {
+        const response = await fetch('http://16.171.155.129:3000/sports');
+        const data = await response.json();
+        if (response.ok) {
+          console.log('Sports fetched successfully:', data);
+          setSports(data);
+        } else {
+          console.error('Failed to fetch sports:', data);
+          setSports([]);
+        }
+      } catch (error) {
+        console.error('Error fetching sports:', error);
+        setSports([]);
+      }
+    };
+
+    fetchSports();
+  }, []);
+
+  const handlePress = (id_sport) => {
+    setSelectedSports((prevSelectedSports) => ({
+      ...prevSelectedSports,
+      [id_sport]: !prevSelectedSports[id_sport],
+    }));
+  };
+
   return (
     <ImageBackground source={require('../assets/images/background_login.png')}
         style={styles.background}>
@@ -44,18 +53,27 @@ const creation_profil_2 = () => {
               <Text style={styles.TitleText}>
                 Sélectionne les sports que tu veux suivres : 
               </Text>
-              <View style={styles.containerSports}>
+              <ScrollView contentContainerStyle={styles.containerSports}>
                 {sports.map((sport) => (
-                  <View key={sport.id_sport} style={styles.buttonSports}>
-                    <Text style={styles.TextSport}>{sport.name}</Text>
-                  </View>
+                  <TouchableOpacity
+                    key={sport.id_sport}
+                    style={[
+                      styles.buttonSports,
+                      selectedSports[sport.id_sport] && styles.buttonSportsSelected,
+                    ]}
+                    onPress={() => handlePress(sport.id_sport)}
+                  >
+                    <Text style={[styles.TextSport,
+                      selectedSports[sport.id_sport] && styles.textSportsSelected,
+                    ]}>{sport.name}</Text>
+                  </TouchableOpacity>
                 ))}
-              </View>
-              <Button title='Suivant' />
-              </View>
+              </ScrollView>
+              <Button title='Suivant' onPress={()=> router.push('home')}/>
+          </View>
       </ScreenWrapper>
     </ImageBackground>              
-  )
+  );
 }
 
 export default creation_profil_2
@@ -80,6 +98,8 @@ const styles = StyleSheet.create({
             backgroundColor: theme.colors.whiteorange,
             borderRadius: theme.radius.xxl,
             alignItems: 'center',
+            width: wp(80),
+            maxHeight: '85%'
       
         },
           TitleText:{
@@ -103,8 +123,14 @@ const styles = StyleSheet.create({
           paddingLeft: 14,
           paddingRight: 14,
         },
+        buttonSportsSelected:{
+            backgroundColor: theme.colors.orange,
+        },
          TextSport:{
           color: theme.colors.orange,
           fontSize: 15
+         },
+         textSportsSelected:{
+            color: 'white'
          }
 })
