@@ -1,4 +1,4 @@
-import { Image, ImageBackground, PixelRatio, StyleSheet, Text, View } from 'react-native'
+import { Image, ImageBackground, PixelRatio, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'expo-router'
 import ScreenWrapper from '../components/SreenWrapper';
@@ -13,6 +13,7 @@ import * as SecureStore from 'expo-secure-store';
 const création_profil_1 = ({size=60}) => {
     const router = useRouter();
     const [sports, setSports] = useState([]);
+    const [selectedSports, setSelectedSports] = useState({});
     const [userId, setUserId] = useState(null);
 
     useEffect(() => {
@@ -52,12 +53,20 @@ const création_profil_1 = ({size=60}) => {
   
       fetchSports();
     }, []);
+
+    const handlePress = (id_sport) => {
+      setSelectedSports((prevSelectedSports) => ({
+        ...prevSelectedSports,
+        [id_sport]: !prevSelectedSports[id_sport],
+      }));
+    };
   return (
     <ImageBackground source={require('../assets/images/background_login.png')}
         style={styles.background}>
       <ScreenWrapper>
          <StatusBar style='dark' />
           <View style={styles.container}>
+            <ScrollView contentContainerStyle={styles.scrollcontainer}>
               <BackButton router={router}/>
               {/* Logo */}
               <Image style={styles.logo} resizeMode='contain' source={require('../assets/images/LogoGo.png')} />
@@ -74,11 +83,21 @@ const création_profil_1 = ({size=60}) => {
               </Text>
               <View style={styles.containerSports}>
                 {sports.map((sport) => (
-                  <View key={sport.id_sport} style={styles.buttonSports}>
-                    <Text style={styles.TextSport}>{sport.name}</Text>
-                  </View>
+                  <TouchableOpacity
+                    key={sport.id_sport}
+                    style={[
+                      styles.buttonSports,
+                      selectedSports[sport.id_sport] && styles.buttonSportsSelected,
+                    ]}
+                    onPress={() => handlePress(sport.id_sport)}
+                  >
+                    <Text style={[styles.TextSport,
+                      selectedSports[sport.id_sport] && styles.textSportsSelected,
+                    ]}>{sport.name}</Text>
+                  </TouchableOpacity>
                 ))}
               </View>
+              </ScrollView>
               <Button title='Suivant' onPress={()=> router.push('creation_profil_2')}/>
           </View>
       </ScreenWrapper>
@@ -103,12 +122,19 @@ const styles = StyleSheet.create({
     },
       container: {
         flex: 1,
-        gap: 20,
+        gap: 10,
         padding: wp(5),
         backgroundColor: theme.colors.whiteorange,
         borderRadius: theme.radius.xxl,
         alignItems: 'center',
+        maxHeight: '80%',
+        width: wp(80)
   
+    },
+    scrollcontainer:{
+      flex: 1,
+      gap: 20,
+      alignItems: 'center',
     },
       circle: {
         height: 100,
@@ -144,5 +170,12 @@ const styles = StyleSheet.create({
      TextSport:{
       color: theme.colors.orange,
       fontSize: 15
-     }
+     },
+
+     buttonSportsSelected:{
+      backgroundColor: theme.colors.orange,
+    },
+    textSportsSelected:{
+        color: 'white'
+    },
 })
