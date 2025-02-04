@@ -29,7 +29,7 @@ const creation_profil_1 = ({ size = 60 }) => {
 
   useEffect(() => {
     const fetchUsername = async () => {
-      const storedUsername = await SecureStore.getItemAsync('usernameRef');
+      const storedUsername = await SecureStore.getItemAsync('username');
       if (storedUsername) {
         setUserId(storedUsername);
         console.log('Username récupéré depuis SecureStore:', storedUsername);
@@ -64,7 +64,7 @@ const creation_profil_1 = ({ size = 60 }) => {
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
