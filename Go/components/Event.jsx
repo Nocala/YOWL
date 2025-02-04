@@ -7,16 +7,8 @@ const Event = ({ name, date, lieu, sport, genre, nb_participants, nb_participant
 
   useEffect(() => {
     if (id_media) {
-      fetch(`http://16.171.155.129:3000/media/id/${id_media}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.filepath) {
-            setImageUrl(`http://16.171.155.129:3000${data.filepath}`);
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching media:', error);
-        });
+      const url = `http://16.171.155.129:3000/media/id/${id_media}`;
+      setImageUrl(url);
     }
   }, [id_media]);
 

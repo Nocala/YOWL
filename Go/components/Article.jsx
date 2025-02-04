@@ -1,13 +1,22 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native'
 import { theme } from '../constants/theme'
 
 const Article = ({ title, description, sport, date, id_media, author }) => {
+  const [imageUrl, setImageUrl] = useState(null)
+
+  useEffect(() => {
+    if (id_media) {
+      const url = `http://16.171.155.129:3000/media/id/${id_media}`
+      setImageUrl(url)
+    }
+  }, [id_media])
+
   return (
     <View style={styles.container}>
       <View style={styles.leftColumn}>
         <Text style={styles.sport}>{sport}</Text>
-        <Image source={{ uri: id_media }} style={styles.image} />
+        {imageUrl && <Image source={{ uri: imageUrl }} style={styles.image} />}
       </View>
       <View style={styles.rightColumn}>
         <Text style={styles.title}>{title}</Text>

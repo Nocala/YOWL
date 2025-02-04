@@ -35,7 +35,7 @@ const News = () => {
             body={article.corps}
             sport={article.sport}
             date={article.date}
-            id_media={`http://16.171.155.129:3000${article.filepath}`}
+            id_media={article.id_media}
             author={article.auteur}
           />
         ))}
