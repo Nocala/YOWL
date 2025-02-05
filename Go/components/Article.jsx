@@ -1,16 +1,29 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View, Image } from 'react-native'
 import { theme } from '../constants/theme'
 
 const Article = ({ title, description, sport, date, id_media, author }) => {
+  const [imageUrl, setImageUrl] = useState(null)
+
+  useEffect(() => {
+    if (id_media) {
+      const url = `http://16.171.155.129:3000/media/id/${id_media}`
+      setImageUrl(url)
+    }
+  }, [id_media])
+
   return (
     <View style={styles.container}>
-      <Image source={{ uri: id_media }} style={styles.image} />
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.description}>{description}</Text>
-      <Text style={styles.sport}>{sport}</Text>
-      <Text style={styles.date}>{date}</Text>
-      <Text style={styles.author}>By {author}</Text>
+      <View style={styles.leftColumn}>
+        <Text style={styles.sport}>{sport}</Text>
+        {imageUrl && <Image source={{ uri: imageUrl }} style={styles.image} />}
+      </View>
+      <View style={styles.rightColumn}>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.description}>{description}</Text>
+        <Text style={styles.date}>{date}</Text>
+        <Text style={styles.author}>By {author}</Text>
+      </View>
     </View>
   )
 }
@@ -19,6 +32,7 @@ export default Article
 
 const styles = StyleSheet.create({
   container: {
+    flexDirection: 'row',
     padding: 10,
     margin: 10,
     backgroundColor: theme.colors.whiteorange,
@@ -27,40 +41,45 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
-    elevation: 1,
+    elevation: 5, // Add this line for Android shadow
+  },
+  leftColumn: {
+    flex: 1,
+    marginRight: 10,
+  },
+  rightColumn: {
+    flex: 2,
+  },
+  sport: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: theme.colors.orange,
   },
   image: {
     width: '100%',
-    height: 200,
+    height: 100,
+    resizeMode: 'cover',
     borderRadius: theme.radius.sm,
   },
   title: {
-    fontSize: 20,
-    fontWeight: theme.fonts.bold,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
     color: theme.colors.orange,
-    marginVertical: 5,
   },
   description: {
-    fontSize: 16,
-    fontWeight: theme.fonts.medium,
-    color: theme.colors.text,
-    marginVertical: 5,
-  },
-  sport: {
     fontSize: 14,
-    fontWeight: theme.fonts.bold,
-    color: theme.colors.orange,
-    marginVertical: 5,
+    marginBottom: 5,
   },
   date: {
     fontSize: 12,
-    color: theme.colors.textLight,
-    marginVertical: 5,
+    marginBottom: 10,
   },
   author: {
     fontSize: 12,
     color: theme.colors.blueDark,
-    marginVertical: 5,
     textAlign: 'right',
+    marginTop: 'auto',
   },
 })

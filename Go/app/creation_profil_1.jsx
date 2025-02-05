@@ -149,8 +149,7 @@ const creation_profil_1 = ({ size = 60 }) => {
       <ScreenWrapper>
         <StatusBar style='dark' />
         <View style={styles.container}>
-          <ScrollView contentContainerStyle={styles.scrollcontainer}>
-            <BackButton router={router} />
+          <ScrollView contentContainerStyle={styles.scrollcontainer} showsVerticalScrollIndicator={false}>
 
             <Image style={styles.logo} resizeMode='contain' source={require('../assets/images/LogoGo.png')} />
 
@@ -219,9 +218,9 @@ const styles = StyleSheet.create({
     width: wp(80),
   },
   scrollcontainer: {
-    flex: 1,
     gap: 20,
     alignItems: 'center',
+    flexGrow: 1
   },
   circle: {
     height: 100,

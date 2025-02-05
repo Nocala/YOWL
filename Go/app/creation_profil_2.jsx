@@ -112,7 +112,7 @@ const creation_profil_2 = ({}) => {
           <Text style={styles.TitleText}>
             Sélectionne les sports que tu veux suivre : 
           </Text>
-          <ScrollView contentContainerStyle={styles.containerSports}>
+          <ScrollView contentContainerStyle={styles.containerSports} showsVerticalScrollIndicator={false}>
             {sports.map((sport) => (
               <TouchableOpacity
                 key={sport.id_sport}
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     color: theme.colors.orange,
   },
   containerSports: {
-    display: 'flex',
+    flexGrow: 1,
     flexWrap: 'wrap',
     flexDirection: 'row',
     gap: 7.5,
