@@ -39,6 +39,7 @@ const Event = ({ name, date, lieu, sport, genre, nb_participants, nb_participant
       <View style={styles.buttonContainer}>
         <Button 
             title="Je veux participer" 
+            buttonStyle={styles.partButton} 
             textStyle={styles.buttonText} 
             onPress={() => { /* action pour participer */ }} />
 
@@ -111,12 +112,26 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginTop: 10,
+
     },
     inviteButton: {
         backgroundColor: theme.colors.whiteorange,
         borderColor: theme.colors.orange,
-        borderWidth: 1,
+        borderWidth: 1,  
+        height: 40, // Reduced height
     },
+    partButton: {
+        backgroundColor: theme.colors.orange,
+        borderColor: theme.colors.orange,
+        borderWidth: 1,
+        height: 40, // Reduced height
+    },
+    buttonText: {
+      paddingHorizontal: 16,
+      fontSize: 15,
+
+    },
+
     inviteButtonText: {
         color: theme.colors.orange,
     },
