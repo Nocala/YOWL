@@ -13,12 +13,12 @@ const Header = () => {
         <View style={styles.container}>
             <Image source={require('../assets/images/LogoGo.png')} style={styles.logo} />
             <View style={styles.icons}>
-                <TouchableOpacity style={styles.icon} onPress={() => router.push('/messages')}>
-                    <Message strokeWidth={1.5} color={theme.colors.textDark} />
-                </TouchableOpacity>
-
                 <TouchableOpacity style={styles.icon} onPress={() => router.push('/profile')}>
                     <User strokeWidth={1.5} color={theme.colors.textDark} />
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.icon} onPress={() => router.push('/messages')}>
+                    <Message strokeWidth={1.5} color={theme.colors.textDark} />
                 </TouchableOpacity>
             </View>
         </View>
