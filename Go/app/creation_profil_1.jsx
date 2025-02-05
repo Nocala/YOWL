@@ -16,16 +16,16 @@ import ScreenWrapper from '../components/SreenWrapper';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../constants/theme';
 import { hp, wp } from '../helpers/common';
-import BackButton from '../components/BackButton';
-import Icon from '../assets/icons/Index';
 import Button from '../components/Button';
+
+const defaultProfileImage = require('../assets/images/profile-defaut.jpeg');
 
 const creation_profil_1 = ({ size = 60 }) => {
   const router = useRouter();
   const [sports, setSports] = useState([]);
   const [selectedSports, setSelectedSports] = useState({});
   const [userId, setUserId] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null); // Image sélectionnée
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -69,7 +69,6 @@ const creation_profil_1 = ({ size = 60 }) => {
       aspect: [1, 1],
       quality: 1,
     });
-    console.log("Image sélectionnée :", result.assets[0]);
 
     if (!result.canceled) {
       const file = result.assets[0];
@@ -82,16 +81,8 @@ const creation_profil_1 = ({ size = 60 }) => {
   };
 
   const handleSubmit = async () => {
-    console.log("=== DEBUG AVANT ENVOI ===");
-    console.log("User ID:", userId);
-    console.log("Image sélectionnée:", selectedImage ? selectedImage.uri : "Aucune image");
-    console.log("Sports sélectionnés:", Object.keys(selectedSports).filter((id) => selectedSports[id]));
     if (!userId) {
       alert("Erreur : Username introuvable.");
-      return;
-    }
-    if (!selectedImage) {
-      alert("Veuillez sélectionner une image.");
       return;
     }
 
@@ -110,30 +101,34 @@ const creation_profil_1 = ({ size = 60 }) => {
 
     const formData = new FormData();
     formData.append("username", userId);
-    formData.append("sports_pratiques", JSON.stringify(sportsNames)); // Envoi des noms au lieu des IDs
-    formData.append("photo_profil", {
-      uri: selectedImage.uri,
-      type: selectedImage.mimeType,
-      name: `profile_${userId}.${selectedImage.uri.split('.').pop()}`
-    });
-    console.log("Données envoyées :", JSON.stringify({
-      username: userId,
-      sports_pratiques: sportsNames, // Affichage des noms ici aussi
-    }));
+    formData.append("sports_pratiques", JSON.stringify(sportsNames));
+
+    // Vérifier si une image personnalisée a été sélectionnée
+    if (selectedImage) {
+      formData.append("photo_profil", {
+        uri: selectedImage.uri,
+        type: selectedImage.mimeType || "image/jpeg",
+        name: `profile_${userId}.${selectedImage.uri.split('.').pop()}`
+      });
+    } else {
+      // Utilisation de l'image par défaut
+      const defaultImageUri = Image.resolveAssetSource(defaultProfileImage).uri;
+      formData.append("photo_profil", {
+        uri: defaultImageUri,
+        type: "image/jpeg",
+        name: "profile_defaut.jpeg"
+      });
+    }
 
     try {
-      console.log("Envoi des données à l'API...");
-    
       const response = await fetch('http://16.171.155.129:3000/profil-1-2', {
         method: 'POST',
         body: formData,
       });
-    
+
       const data = await response.json();
-      console.log("Réponse de l'API depuis l'appli:", data);
-    
+
       if (response.ok) {
-        //alert("Profil créé avec succès !");
         console.log("Navigation vers creation_profil_2...");
         router.push('creation_profil_2');
       } else {
@@ -158,7 +153,7 @@ const creation_profil_1 = ({ size = 60 }) => {
               {selectedImage ? (
                 <Image source={{ uri: selectedImage.uri }} style={styles.profileImage} />
               ) : (
-                <Icon name="plus" strokeWidth={2.5} size={size} color={theme.colors.orange} />
+                <Image source={defaultProfileImage} style={styles.profileImage} />
               )}
             </TouchableOpacity>
 
