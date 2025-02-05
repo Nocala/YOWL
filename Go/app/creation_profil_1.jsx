@@ -180,7 +180,7 @@ const creation_profil_1 = ({ size = 60 }) => {
               ))}
             </View>
           </ScrollView>
-          <Button title="Suivant" onPress={handleSubmit} />
+          <Button title="Suivant" buttonStyle={{paddingLeft: wp(10),paddingRight: wp(10)}} onPress={handleSubmit} />
         </View>
       </ScreenWrapper>
     </ImageBackground>
