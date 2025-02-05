@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { theme } from '../constants/theme';
-
 import User from '../assets/icons/User';
 import Message from '../assets/icons/Message'
 

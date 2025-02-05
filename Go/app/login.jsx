@@ -16,7 +16,7 @@ const Login = () => {
     const passwordRef = useRef("");
     const [loading, setLoading] = useState(false);
 
-    const onSubmit = async () => {
+    const handleLogin = async () => {
         if (!emailRef.current || !passwordRef.current) {
             Alert.alert('Login', "Veuillez remplir tous les champs !");
             return;
@@ -70,7 +70,7 @@ const Login = () => {
                         <ScreenWrapper>
                             <StatusBar style='dark' />
                             <View style={styles.innerContainer}>
-                                <BackButton router={router} />
+                                <BackButton onPress={() => router.push('/Welcome')} /> {/* Passez la fonction onPress */}
 
                                 {/* Welcome */}
                                 <View>
@@ -100,7 +100,7 @@ const Login = () => {
                                         Mot de passe oublié ?
                                     </Text>
                                     {/* Button login */}
-                                    <Button title='Login' loading={loading} onPress={onSubmit} />
+                                    <Button title='Login' loading={loading} onPress={handleLogin} />
                                 </View>
 
                                 {/* Footer */}
