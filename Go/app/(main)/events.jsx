@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { useRouter } from "expo-router";
+
+import { theme } from '../../constants/theme';
 import Event from '../../components/Event';
 import ScreenWrapper from '../../components/SreenWrapper';
-import { theme } from '../../constants/theme';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
+import Plus from '../../assets/icons/Plus';
+
 
 const EventsPage = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     fetch('http://16.171.155.129:3000/events')
@@ -57,6 +63,11 @@ const EventsPage = () => {
             ))
           )}
         </ScrollView>
+
+        <TouchableOpacity style={[styles.fab, { bottom: 80 }]} onPress={() => router.push('/creation_event')}>
+          <Plus strokeWidth={2} color={theme.colors.orange}/>
+        </TouchableOpacity>
+
         <Footer />
       </View>
     </ScreenWrapper>
@@ -76,12 +87,30 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     padding: 10,
-    paddingBottom: 80, // To avoid content being hidden behind the footer
+    paddingBottom: 80,
   },
   errorText: {
     color: theme.colors.rose,
     textAlign: 'center',
     marginTop: 20,
+  },
+  fab: {
+    position: 'absolute',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: theme.colors.whiteorange,
+    justifyContent: 'center',
+    alignItems: 'center',
+    bottom: 16,
+    right: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5,
+    borderWidth: 2, // Add border width
+    borderColor: theme.colors.orange, // Add border color
   },
 });
 

@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const reels = () => {
+const creation_event = () => {
   return (
     <View>
-      <Text>reels</Text>
+      <Text>creation_event</Text>
     </View>
   )
 }
 
-export default reels
+export default creation_event
 
 const styles = StyleSheet.create({})

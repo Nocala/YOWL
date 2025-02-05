@@ -7,7 +7,6 @@ import Home from "../assets/icons/Home";
 import Search from "../assets/icons/Search";
 import Basketball from "../assets/icons/Basket-ball_Ball";
 import News from "../assets/icons/News";
-import Reels from "../assets/icons/Reels";
 import Icon from "../assets/icons/Index";
 
 const Footer = () => {
