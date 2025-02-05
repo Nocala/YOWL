@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Post from '../../components/Post_txt';
 import ScreenWrapper from '../../components/SreenWrapper';
@@ -6,7 +6,7 @@ import Footer from '../../components/Footer';
 import Header from '../../components/Header';
 import { theme } from '../../constants/theme';
 
-const Home = () => {
+const Home = (size=24) => {
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
@@ -55,5 +55,18 @@ export default Home;
 const styles = StyleSheet.create({
   scrollViewContent: {
     padding: 10,
+  },
+  pluspost: {
+    height: 100,
+    width: 100,
+    borderRadius: 20,
+    backgroundColor: theme.colors.whiteorange,
+    borderColor: theme.colors.blueDark,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    right: '5%',
+    bottom: '10%'
   },
 });
