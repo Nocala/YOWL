@@ -4,15 +4,14 @@ import { useRouter } from 'expo-router';
 import { theme } from '../constants/theme';
 
 import User from '../assets/icons/User';
-import Message from '../assets/icons/Message';
-import Logo from '../assets/images/LogoGo.png';
+import Message from '../assets/icons/Message'
 
 const Header = () => {
     const router = useRouter();
     
     return (
         <View style={styles.container}>
-            <Image source={Logo} style={styles.logo} />
+            <Image source={require('../assets/images/LogoGo.png')} style={styles.logo} />
             <View style={styles.icons}>
                 <TouchableOpacity style={styles.icon} onPress={() => router.push('/messages')}>
                     <Message strokeWidth={1.5} color={theme.colors.textDark} />
