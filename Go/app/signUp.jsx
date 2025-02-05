@@ -76,7 +76,7 @@ const SignUp = () => {
                 <ScreenWrapper>
                     <StatusBar style='dark' />
                     <View style={styles.innerContainer}>
-                        <BackButton router={router} />
+                    <BackButton onPress={() => router.push('/Welcome')} /> {/* Passez la fonction onPress */}
 
                         {/* Welcome */}
                         <View>
