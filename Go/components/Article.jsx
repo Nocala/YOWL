@@ -12,6 +12,8 @@ const Article = ({ title, description, sport, date, id_media, author }) => {
     }
   }, [id_media])
 
+  const formattedDate = new Date(date).toLocaleDateString('fr-FR')
+
   return (
     <View style={styles.container}>
       <View style={styles.leftColumn}>
@@ -21,7 +23,7 @@ const Article = ({ title, description, sport, date, id_media, author }) => {
       <View style={styles.rightColumn}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
-        <Text style={styles.date}>{date}</Text>
+        <Text style={styles.date}>{formattedDate}</Text>
         <Text style={styles.author}>By {author}</Text>
       </View>
     </View>
