@@ -8,6 +8,7 @@ import Search from "../assets/icons/Search";
 import Basketball from "../assets/icons/Basket-ball_Ball";
 import News from "../assets/icons/News";
 import Reels from "../assets/icons/Reels";
+import Icon from "../assets/icons/Index";
 
 const Footer = () => {
     const router = useRouter();
@@ -30,8 +31,8 @@ const Footer = () => {
                 <News strokeWidth={1.5} color={theme.colors.blueDark} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.iconContainer} onPress={() => router.push('/reels')}>
-                <Reels strokeWidth={1.5} color={theme.colors.blueDark} />
+            <TouchableOpacity style={styles.iconContainer} onPress={() => router.push('/creation_post')}>
+                <Icon name='plus_2' strokeWidth={1.5} color={theme.colors.blueDark} />
             </TouchableOpacity>
         </View>
     );

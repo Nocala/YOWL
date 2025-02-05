@@ -9,6 +9,7 @@ import Cross from './Cross'
 import Message from './Message'
 import News from './News'
 import Plus from './Plus'
+import Plus_2 from './Plus_2'
 import Reels from './Reels'
 import Search from './Search'
 import User from './User'
@@ -25,6 +26,7 @@ const icons = {
     reels: Reels,
     search: Search,
     user: User,
+    plus_2: Plus_2,
 }
 
 const Icon = ({name, ...props}) => {
