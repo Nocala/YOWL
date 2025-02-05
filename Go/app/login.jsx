@@ -12,13 +12,13 @@ import Button from '../components/Button';
 
 const Login = () => {
     const router = useRouter();
-    const emailRef = useRef("");
-    const passwordRef = useRef("");
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
     const handleLogin = async () => {
-        if (!emailRef.current || !passwordRef.current) {
-            Alert.alert('Login', "Veuillez remplir tous les champs !");
+        if (!email || !password) {
+            Alert.alert('Attention !', "Tu dois remplir tous les champs !");
             return;
         }
 
@@ -31,18 +31,16 @@ const Login = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    email: emailRef.current,
-                    password: passwordRef.current,
+                    email,
+                    password,
                 }),
             });
 
             const data = await response.json();
 
             if (response.ok) {
-                // Stocker le token de manière sécurisée avec expo-secure-store
                 await SecureStore.setItemAsync("authToken", data.token);
 
-                // Vérification en console
                 const storedToken = await SecureStore.getItemAsync("authToken");
                 console.log("Token stocké avec succès :", storedToken);
                 Alert.alert('Login', 'Connexion réussie !', [
@@ -51,7 +49,7 @@ const Login = () => {
                         onPress: () => router.push('/home')
                     }
                 ]);
-                
+
             } else {
                 Alert.alert('Login', data.error || 'Erreur de connexion');
             }
@@ -67,55 +65,53 @@ const Login = () => {
             <View style={styles.container}>
                 <ImageBackground source={require('../assets/images/background_login.png')}
                     style={styles.background}>
-                        <ScreenWrapper>
-                            <StatusBar style='dark' />
-                            <View style={styles.innerContainer}>
-                                <BackButton onPress={() => router.push('/Welcome')} /> {/* Passez la fonction onPress */}
+                    <ScreenWrapper>
+                        <StatusBar style='dark' />
+                        <View style={styles.innerContainer}>
+                            <BackButton onPress={() => router.push('/Welcome')} /> 
 
-                                {/* Welcome */}
-                                <View>
-                                    <Text style={styles.welcomText}>Hey,</Text>
-                                    <Text style={styles.welcomText}>welcome back !</Text>
-                                </View>
-
-                                {/* Form */}
-                                <View style={styles.form}>
-                                    <Input
-                                        ref={emailRef}
-                                        placeholder="Email"
-                                        keyboardType="email-address" // Mode connexion pour email
-                                        autoCapitalize="none"
-                                        autoCorrect={false}
-                                        onChangeText={value => emailRef.current = value}
-                                    />
-                                    <Input
-                                        ref={passwordRef}
-                                        placeholder='Mot de passe'
-                                        secureTextEntry // Mode connexion pour mot de passe
-                                        autoCapitalize="none"
-                                        autoCorrect={false}
-                                        onChangeText={value => passwordRef.current = value}
-                                    />
-                                    <Text style={styles.forgotPassword}>
-                                        Mot de passe oublié ?
-                                    </Text>
-                                    {/* Button login */}
-                                    <Button title='Login' loading={loading} onPress={handleLogin} />
-                                </View>
-
-                                {/* Footer */}
-                                <View style={styles.footer}>
-                                    <Text style={styles.footerText}>
-                                        Tu n'as pas de compte ?
-                                    </Text>
-                                    <Pressable onPress={() => router.push('signUp')}>
-                                        <Text style={[styles.footerText, { color: theme.colors.orange, fontWeight: theme.fonts.semibold }]}>
-                                            Inscris-toi ici !
-                                        </Text>
-                                    </Pressable>
-                                </View>
+                            {/* Welcome */}
+                            <View>
+                                <Text style={styles.welcomText}>Hey,</Text>
+                                <Text style={styles.welcomText}>welcome back !</Text>
                             </View>
-                        </ScreenWrapper>
+
+                            {/* Form */}
+                            <View style={styles.form}>
+                                <Input
+                                    placeholder="Email"
+                                    keyboardType="email-address"
+                                    autoCapitalize="none"
+                                    autoCorrect={false}
+                                    value={email}
+                                    onChangeText={setEmail}
+                                />
+                                <Input
+                                    placeholder='Mot de passe'
+                                    secureTextEntry
+                                    autoCapitalize="none"
+                                    autoCorrect={false}
+                                    value={password}
+                                    onChangeText={setPassword}
+                                />
+                                <Text style={styles.forgotPassword}>
+                                    Mot de passe oublié ?
+                                </Text>
+                                {/* Button login */}
+                                <Button title='Login' loading={loading} onPress={handleLogin} />
+                            </View>
+
+                            {/* Footer */}
+                            <View style={styles.footer}>
+                                <Text style={styles.footerText}>
+                                    Tu n'as pas de compte ?
+                                </Text>
+                                <Pressable onPress={() => router.push('signUp')}>
+                                    <Text style={[styles.footerText, { color: theme.colors.orange, fontWeight: theme.fonts.semibold }]}>Inscris-toi ici !</Text>
+                                </Pressable>
+                            </View>
+                        </View>
+                    </ScreenWrapper>
                 </ImageBackground>
             </View>
         </TouchableWithoutFeedback>
@@ -145,7 +141,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.whiteorange,
         borderRadius: theme.radius.xxl,
         alignSelf: 'center',
-        justifyContent: 'center', 
+        justifyContent: 'center',
         maxHeight: '70%',
     },
     welcomText: {
@@ -173,6 +169,6 @@ const styles = StyleSheet.create({
         fontSize: hp(1.6)
     },
     backButton: {
-        marginBottom: 5, // Réduisez cette valeur pour diminuer l'espace en dessous du BackButton
+        marginBottom: 5,
     }
 });
