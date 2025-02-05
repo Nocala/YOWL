@@ -1,5 +1,5 @@
 import { Alert, View, Text, TouchableWithoutFeedback, Keyboard, ImageBackground, StyleSheet, Pressable } from 'react-native';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import BackButton from '../components/BackButton';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -12,20 +12,20 @@ import * as SecureStore from 'expo-secure-store';
 
 const SignUp = () => {
     const router = useRouter();
-    const usernameRef = useRef("");
-    const emailRef = useRef("");
-    const passwordRef = useRef("");
-    const confirmPasswordRef = useRef("");
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState(null);
 
     const onSubmit = async () => {
-        if (!usernameRef.current || !emailRef.current || !passwordRef.current || !confirmPasswordRef.current) {
+        if (!username || !email || !password || !confirmPassword) {
             Alert.alert('Inscription', "Veuillez remplir tous les champs !");
             return;
         }
 
-        if (passwordRef.current !== confirmPasswordRef.current) {
+        if (password !== confirmPassword) {
             Alert.alert('Inscription', "Les mots de passe ne correspondent pas !");
             return;
         }
@@ -39,9 +39,9 @@ const SignUp = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    username: usernameRef.current,
-                    email: emailRef.current,
-                    password: passwordRef.current,
+                    username,
+                    email,
+                    password,
                 }),
             });
 
@@ -50,9 +50,9 @@ const SignUp = () => {
             if (response.ok) {
                 setUserId(data.userId);
                 await SecureStore.setItemAsync('userId', data.userId.toString());
-                await SecureStore.setItemAsync('username', usernameRef.current);
+                await SecureStore.setItemAsync('username', username);
                 console.log('User ID:', data.userId);
-                console.log('Username:', usernameRef.current);
+                console.log('Username:', username);
                 Alert.alert('Inscription', 'Utilisateur créé avec succès !', [
                     {
                         text: 'OK',
@@ -76,7 +76,7 @@ const SignUp = () => {
                 <ScreenWrapper>
                     <StatusBar style='dark' />
                     <View style={styles.innerContainer}>
-                    <BackButton onPress={() => router.push('/Welcome')} /> {/* Passez la fonction onPress */}
+                        <BackButton onPress={() => router.push('/Welcome')} />
 
                         {/* Welcome */}
                         <View>
@@ -90,28 +90,32 @@ const SignUp = () => {
                             </Text>
                             <Input
                                 placeholder="Nom d'utilisateur"
-                                onChangeText={value => usernameRef.current = value}
+                                value={username}
+                                onChangeText={setUsername}
                             />
                             <Input
                                 placeholder='Adresse email'
                                 keyboardType="email-address"
                                 autoCapitalize="none"
                                 autoCorrect={false}
-                                onChangeText={value => emailRef.current = value}
+                                value={email}
+                                onChangeText={setEmail}
                             />
                             <Input
                                 placeholder='Mot de passe'
                                 secureTextEntry
                                 autoCapitalize="none"
                                 autoCorrect={false}
-                                onChangeText={value => passwordRef.current = value}
+                                value={password}
+                                onChangeText={setPassword}
                             />
                             <Input
                                 placeholder='Confirmation du mot de passe'
                                 secureTextEntry
                                 autoCapitalize="none"
                                 autoCorrect={false}
-                                onChangeText={value => confirmPasswordRef.current = value}
+                                value={confirmPassword}
+                                onChangeText={setConfirmPassword}
                             />
                             <Button title='Sign Up' loading={loading} onPress={onSubmit} />
                         </View>
