@@ -17,8 +17,12 @@ import { useRouter } from 'expo-router'
                 <Image style={styles.welcomeImage} resizeMode='contain' source={require('../assets/images/LogoGo.png')} />
                 {/* title */}
                 <View style={{gap: 20}}>
-                    <Text style={styles.title}>GOOOOOO.</Text>
-                    <Text style={styles.punchline}>Ici ce place la punchline de notre app qui se nomme Go.</Text>
+                    <Text style={styles.title}>BIENVENUE SUR GO.</Text>
+                    <Text style={styles.punchline}>
+                        <Text style={styles.create}>Create. </Text>
+                        <Text style={styles.train}>Train. </Text>
+                        <Text style={styles.inspire}>Inspire.</Text>
+                    </Text>
                 </View>
                 {/* footer */}
                 <View style={styles.footer}>
@@ -59,7 +63,7 @@ import { useRouter } from 'expo-router'
         alignSelf: 'center',
     },
     title: {
-        color: theme.colors.text,
+        color: theme.colors.blueDark,
         fontSize: hp(4),
         textAlign: 'center',
         fontWeight: theme.fonts.extrabold
@@ -67,8 +71,9 @@ import { useRouter } from 'expo-router'
     punchline: {
         textAlign: 'center',
         paddingHorizontal: wp(10),
-        fontSize: hp(1.7),
-        color: theme.colors.text
+        fontSize: hp(3),
+        color: theme.colors.text,
+        fontWeight: theme.fonts.bold
     },
     footer: {
         gap: 30,
@@ -83,6 +88,15 @@ import { useRouter } from 'expo-router'
     loginText: {
         textAlign: 'center',
         color: theme.colors.text,
-        fontSize: hp(1.6),
-    }
+        fontSize: hp(2),
+    },
+    create: {
+        color: theme.colors.blueDark,
+    },
+    train: {
+        color: theme.colors.orange,
+    },
+    inspire: {
+        color: theme.colors.blueLight,
+    },
  })
