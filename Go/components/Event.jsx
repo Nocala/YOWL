@@ -3,8 +3,9 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { theme } from '../constants/theme';
 import Button from '../components/Button';
 
-const Event = ({ name, date, lieu, sport, genre, nb_participants, nb_participants_max, description, id_media }) => {
+const Event = ({ name, date, lieu, sport, genre, nb_participants, nb_participants_max, description, id_media, eventId }) => {
   const [imageUrl, setImageUrl] = useState(null);
+  const [participantsData, setParticipantsData] = useState({ participants: 0, maxParticipants: 0 });
 
   useEffect(() => {
     if (id_media) {
@@ -12,6 +13,25 @@ const Event = ({ name, date, lieu, sport, genre, nb_participants, nb_participant
       setImageUrl(url);
     }
   }, [id_media]);
+
+  useEffect(() => {
+    const fetchParticipantsData = async () => {
+      try {
+        const response = await fetch(`http://16.171.155.129:3000/events/${eventId}/participants/count`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setParticipantsData(data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des données des participants:', error);
+      }
+    };
+
+    if (eventId) {
+      fetchParticipantsData();
+    }
+  }, [eventId]);
 
   const formattedDate = new Date(date).toLocaleDateString('fr-FR');
 
@@ -33,8 +53,8 @@ const Event = ({ name, date, lieu, sport, genre, nb_participants, nb_participant
         <Text style={styles.variable}> {genre}</Text>  
       </Text>
 
-      <Text style={styles.eventPart}>Participants : 
-        <Text style={styles.variable}> {nb_participants}/{nb_participants_max}</Text>  
+      <Text style={styles.eventParticipants}>
+        Participants : {participantsData.participants} / {participantsData.maxParticipants}
       </Text>
 
       <View style={styles.buttonContainer}>
@@ -102,7 +122,7 @@ const styles = StyleSheet.create({
         color: theme.colors.blueDark,
         paddingBottom: 10,
     },
-    eventPart: {
+    eventParticipants: {
         fontSize: 16,
         color: theme.colors.blueDark,
     },

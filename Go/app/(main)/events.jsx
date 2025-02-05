@@ -52,6 +52,7 @@ const EventsPage = () => {
                 nb_participants_max={event.nb_participants_max}
                 description={event.description}
                 id_media={event.id_media}
+                eventId={event.id_event} 
               />
             ))
           )}
