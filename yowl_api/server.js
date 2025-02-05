@@ -413,6 +413,22 @@ app.post('/posts-media', verifyToken, upload.single('file'), (req, res) => {
   });
 });
 
+// Route pour récupérer tous les posts médias
+app.get('/posts-media', (req, res) => {
+  const query = 'SELECT * FROM POST_MEDIA';
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération des posts médias:', err);
+      return res.status(500).json({ error: 'Erreur lors de la récupération des posts médias' });
+    }
+
+    res.json({ mediaPosts: results });
+  });
+});
+
+
+
 //------------------------------------------
 // Routes articles
 
