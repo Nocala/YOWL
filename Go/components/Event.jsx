@@ -3,7 +3,6 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { theme } from '../constants/theme';
 import Button from '../components/Button';
 
-
 const Event = ({ name, date, lieu, sport, genre, nb_participants, nb_participants_max, description, id_media }) => {
   const [imageUrl, setImageUrl] = useState(null);
 
@@ -13,6 +12,8 @@ const Event = ({ name, date, lieu, sport, genre, nb_participants, nb_participant
       setImageUrl(url);
     }
   }, [id_media]);
+
+  const formattedDate = new Date(date).toLocaleDateString('fr-FR');
 
   return (
     <View style={styles.eventContainer}>
@@ -24,7 +25,7 @@ const Event = ({ name, date, lieu, sport, genre, nb_participants, nb_participant
 
       <Text style={styles.eventDesc}>Description : {description}</Text>
 
-      <Text style={styles.eventDate}>Le {date}</Text>
+      <Text style={styles.eventDate}>Le {formattedDate}</Text>
 
       <Text style={styles.eventLieu}>A {lieu}</Text>
 
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 10,
+        marginTop: 20,
 
     },
     inviteButton: {
