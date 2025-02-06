@@ -12,25 +12,45 @@ import Icon from "../assets/icons/Index";
 const Footer = () => {
     const router = useRouter();
 
+    const handleNavigation = (path) => {
+        if (router.pathname === path) return; // Empêche l'exécution si on est déjà sur la page
+        router.push(path);
+    };
+
     return (
         <View style={styles.footer}>
-            <TouchableOpacity style={styles.iconContainer} onPress={() => router.push('/home')}>
+            <TouchableOpacity 
+                style={styles.iconContainer} 
+                onPress={() => handleNavigation('/home')}
+            >
                 <Home strokeWidth={1.5} color={theme.colors.blueDark} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.iconContainer} onPress={() => router.push('/search')}>
+            <TouchableOpacity 
+                style={styles.iconContainer} 
+                onPress={() => handleNavigation('/search')}
+            >
                 <Search strokeWidth={1.5} color={theme.colors.blueDark} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.iconContainer, styles.basketballContainer]} onPress={() => router.push('/events')}>
+            <TouchableOpacity 
+                style={[styles.iconContainer, styles.basketballContainer]} 
+                onPress={() => handleNavigation('/events')}
+            >
                 <Basketball strokeWidth={1.5} color={theme.colors.orange} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.iconContainer} onPress={() => router.push('/news')}>
+            <TouchableOpacity 
+                style={styles.iconContainer} 
+                onPress={() => handleNavigation('/news')}
+            >
                 <News strokeWidth={1.5} color={theme.colors.blueDark} />
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.iconContainer} onPress={() => router.push('/creation_post')}>
+            <TouchableOpacity 
+                style={styles.iconContainer} 
+                onPress={() => handleNavigation('/creation_post')}
+            >
                 <Icon name='plus_2' strokeWidth={1.5} color={theme.colors.blueDark} />
             </TouchableOpacity>
         </View>
@@ -51,7 +71,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     basketballContainer: {
-        transform: [{ scale: 1.5 }], // Increase the size of the basketball icon
+        transform: [{ scale: 1.5 }],
     },
 });
 
