@@ -43,7 +43,7 @@ const Login = () => {
 
                 const storedToken = await SecureStore.getItemAsync("authToken");
                 console.log("Token stocké avec succès :", storedToken);
-                Alert.alert('Tu es connecté !', 'Bon retour parmis nous 😌', [
+                Alert.alert('Tu es connecté !', 'Bon retour parmi nous 🥹', [
                     {
                         text: 'OK',
                         onPress: () => router.push('/home')

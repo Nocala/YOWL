@@ -10,7 +10,6 @@ import Button from '../../components/Button';
 import { wp } from '../../helpers/common';
 import Icon from '../../assets/icons/Index';
 
-const defaultProfileImage = require('../../assets/images/profile-defaut.jpeg');
 const CreationPost = () => {
   const router = useRouter();
   const [selectedButton, setSelectedButton] = useState(null);
