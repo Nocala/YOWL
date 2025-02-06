@@ -33,11 +33,11 @@ import { useRouter } from 'expo-router'
                     />
                     <View style={styles.bottomTextContainer}>
                         <Text style={styles.loginText}>
-                            J'ai déjà un compte !
+                            J'ai déjà un compte :
                         </Text>
                         <Pressable onPress={()=> router.push('login')}>
                             <Text style={[styles.loginText, {color: theme.colors.orange, fontWeight: theme.fonts.semibold}]}>
-                                Login
+                                Je me connecte !
                             </Text>
                         </Pressable>
                     </View>

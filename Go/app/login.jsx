@@ -43,18 +43,26 @@ const Login = () => {
 
                 const storedToken = await SecureStore.getItemAsync("authToken");
                 console.log("Token stocké avec succès :", storedToken);
-                Alert.alert('Login', 'Connexion réussie !', [
+                Alert.alert('Tu es connecté !', 'Bon retour parmis nous 😌', [
                     {
                         text: 'OK',
                         onPress: () => router.push('/home')
                     }
                 ]);
 
+            } else if (data.error === 'Il semble que tu n\'as pas de compte...') {
+                Alert.alert('Oups...', 'Il semble que tu n\'as pas de compte...', [
+                    {
+                        text: 'Crée en un !',
+                        onPress: () => router.push('/signUp')
+                    }
+                ]);
             } else {
-                Alert.alert('Login', data.error || 'Erreur de connexion');
+                Alert.alert('Oups...', data.error || 'Erreur de connexion');
             }
+
         } catch (error) {
-            Alert.alert('Login', 'Erreur de connexion');
+            Alert.alert('Oups...', 'Erreur de connexion 😬');
         } finally {
             setLoading(false);
         }
@@ -98,7 +106,7 @@ const Login = () => {
                                     Mot de passe oublié ?
                                 </Text>
                                 {/* Button login */}
-                                <Button title='Login' loading={loading} onPress={handleLogin} />
+                                <Button title='Me connecter' loading={loading} onPress={handleLogin} />
                             </View>
 
                             {/* Footer */}

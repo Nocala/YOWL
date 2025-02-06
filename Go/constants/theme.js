@@ -11,7 +11,7 @@ export const theme ={
         blueDark: '#1A265A',
 
         text: '#494949',
-        textLight: '#7C7C7C',
+        textLight: '#7D7D7D',
         textDark: '#1D1D1D',
 
         rose: '#ef4444',
