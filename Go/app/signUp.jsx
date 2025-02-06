@@ -19,14 +19,36 @@ const SignUp = () => {
     const [loading, setLoading] = useState(false);
     const [userId, setUserId] = useState(null);
 
+    const [isLengthValid, setIsLengthValid] = useState(false);
+    const [hasNumber, setHasNumber] = useState(false);
+    const [hasUppercase, setHasUppercase] = useState(false);
+    const [hasSpecialChar, setHasSpecialChar] = useState(false);
+
+    const validatePassword = (password) => {
+        setIsLengthValid(password.length >= 12);
+        setHasNumber(/\d/.test(password));
+        setHasUppercase(/[A-Z]/.test(password));
+        setHasSpecialChar(/[!@#$%^&*]/.test(password));
+    };
+
+    const onPasswordChange = (password) => {
+        setPassword(password);
+        validatePassword(password);
+    };
+
     const onSubmit = async () => {
         if (!username || !email || !password || !confirmPassword) {
-            Alert.alert('Inscription', "Veuillez remplir tous les champs !");
+            Alert.alert('Attends', "Tu dois remplir tous les champs 😶‍🌫️");
             return;
         }
 
         if (password !== confirmPassword) {
-            Alert.alert('Inscription', "Les mots de passe ne correspondent pas !");
+            Alert.alert('Attention', "Les mots de passe ne correspondent pas 😡");
+            return;
+        }
+
+        if (!isLengthValid || !hasNumber || !hasUppercase || !hasSpecialChar) {
+            Alert.alert('Non mais oh', "Le mot de passe ne respecte pas les conditions de sécurité !");
             return;
         }
 
@@ -86,7 +108,7 @@ const SignUp = () => {
                         {/* form */}
                         <View style={styles.form}>
                             <Text style={{ fontSize: hp(1.5), color: theme.colors.text }}>
-                                Please fill the details to create a new account
+                            Remplis tous les champs pour créer un nouveau compte 
                             </Text>
                             <Input
                                 placeholder="Nom d'utilisateur"
@@ -107,8 +129,12 @@ const SignUp = () => {
                                 autoCapitalize="none"
                                 autoCorrect={false}
                                 value={password}
-                                onChangeText={setPassword}
+                                onChangeText={onPasswordChange}
                             />
+                            <Text style={[styles.securedPassword, isLengthValid && styles.valid]}>•12 caractères</Text>
+                            <Text style={[styles.securedPassword, hasNumber && styles.valid]}>•Un chiffre</Text>
+                            <Text style={[styles.securedPassword, hasUppercase && styles.valid]}>•Une majuscule</Text>
+                            <Text style={[styles.securedPassword, hasSpecialChar && styles.valid]}>•Au moins un caractère spécial (!@#$%^&*)</Text>
                             <Input
                                 placeholder='Confirmation du mot de passe'
                                 secureTextEntry
@@ -117,15 +143,15 @@ const SignUp = () => {
                                 value={confirmPassword}
                                 onChangeText={setConfirmPassword}
                             />
-                            <Button title='Sign Up' loading={loading} onPress={onSubmit} />
+                            <Button title='Créer mon compte' loading={loading} onPress={onSubmit} />
                         </View>
                         {/* footer */}
                         <View style={styles.footer}>
                             <Text style={styles.footerText}>
-                                Already have an account !
+                                J'ai déja un compte :
                             </Text>
                             <Pressable onPress={() => router.push('login')}>
-                                <Text style={[styles.footerText, { color: theme.colors.orange, fontWeight: theme.fonts.semibold }]}>Login</Text>
+                                <Text style={[styles.footerText, { color: theme.colors.orange, fontWeight: theme.fonts.semibold }]}>Je me connecte !</Text>
                             </Pressable>
                         </View>
                     </View>
@@ -162,6 +188,17 @@ const styles = StyleSheet.create({
     form: {
         gap: 25,
         paddingBottom: 20,
+    },
+    securedPassword: {
+        textAlign: 'left',
+        fontSize: hp(1.3),
+        fontWeight: theme.fonts.medium,
+        color: theme.colors.textLight,
+        marginTop: -15,
+        marginBottom: -8,
+    },
+    valid: {
+        color: 'green',
     },
     footer: {
         flexDirection: 'row',
