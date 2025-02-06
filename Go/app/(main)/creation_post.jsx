@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, TouchableWithoutFeedback, Keyboard, Image,} from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, TouchableWithoutFeedback, Keyboard, Image, Alert,} from 'react-native';
+import React, { useState, useEffect } from 'react';
 import ScreenWrapper from '../../components/SreenWrapper';
 import BackButton from '../../components/BackButton';
 import { useRouter } from 'expo-router';
@@ -9,6 +9,8 @@ import Footer from '../../components/Footer';
 import Button from '../../components/Button';
 import { wp } from '../../helpers/common';
 import Icon from '../../assets/icons/Index';
+import * as SecureStore from 'expo-secure-store';
+import * as ImagePicker from 'expo-image-picker';
 
 const CreationPost = () => {
   const router = useRouter();
@@ -17,27 +19,98 @@ const CreationPost = () => {
   const [postDescription, setPostDescription] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
 
+  useEffect(() => {
+    (async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Désolé, nous avons besoin des permissions de la bibliothèque pour que cela fonctionne!');
+      }
+    })();
+  }, []);
+
   const handlePress = (button) => {
     setSelectedButton(button);
   };
 
   const pickImage = async () => {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const file = result.assets[0];
+      setSelectedImage(file);
+    }
+  };
+
+  const handleSubmitTextPost = async () => {
+    try {
+      const token = await SecureStore.getItemAsync('authToken');
+      const response = await fetch('http://16.171.155.129:3000/posts-txt', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          text: postText,
+          description: postDescription,
+        }),
       });
-  
-      if (!result.canceled) {
-        const file = result.assets[0];
-        if (['image/jpeg', 'image/png'].includes(file.mimeType)) {
-          setSelectedImage(file);
-        } else {
-          alert("Seuls les formats JPEG et PNG sont autorisés.");
-        }
+
+      if (response.ok) {
+        Alert.alert('C\'est ok !', 'Ton post a été créé 👍', [
+          {
+            text: 'OK',
+            onPress: () => router.push('/home')
+          }
+        ]);
+      } else {
+        alert('Erreur lors de la création du post textuel');
       }
-    };
+    } catch (error) {
+      console.error('Erreur lors de la création du post textuel:', error);
+      alert('Erreur lors de la création du post textuel');
+    }
+  };
+
+  const handleSubmitMediaPost = async () => {
+    const formData = new FormData();
+    formData.append('file', {
+      uri: selectedImage.uri,
+      type: selectedImage.type,
+      name: selectedImage.fileName,
+    });
+    formData.append('description', postDescription);
+
+    try {
+      const token = await SecureStore.getItemAsync('authToken');
+      const response = await fetch('http://16.171.155.129:3000/posts-media', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (response.ok) {
+        Alert.alert('C\'est ok !', 'Ton post a été créé 👍', [
+          {
+            text: 'OK',
+            onPress: () => router.push('/home')
+          }
+        ]);
+      } else {
+        alert('Erreur lors de la création du post média');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la création du post média:', error);
+      alert('Erreur lors de la création du post média');
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -91,7 +164,7 @@ const CreationPost = () => {
                       />
                     </ScrollView>
                   </View>
-                  <Button title="Post" buttonStyle={{ paddingLeft: wp(10), paddingRight: wp(10) }} onPress={() => console.log('Post Text:', postText)} />
+                  <Button title="Post" buttonStyle={{ paddingLeft: wp(10), paddingRight: wp(10) }} onPress={handleSubmitTextPost} />
                 </View>
               )}
               {selectedButton === 'button2' && (
@@ -119,7 +192,7 @@ const CreationPost = () => {
                       />
                     </ScrollView>
                   </View>
-                  <Button title="Post" buttonStyle={{ paddingLeft: wp(10), paddingRight: wp(10) }} onPress={() => console.log('Post Média')} />
+                  <Button title="Post" buttonStyle={{ paddingLeft: wp(10), paddingRight: wp(10) }} onPress={handleSubmitMediaPost} />
                 </View>
               )}
             </View>
@@ -223,8 +296,8 @@ const styles = StyleSheet.create({
   profileImage: {
     width: '100%',
     height: '100%',
-    borderRadius: 100,
-  },
+    borderRadius: theme.radius.xl,
+    },
   inputImage: {
     width: "100%",
     alignItems:"center"
