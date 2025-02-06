@@ -11,7 +11,7 @@ import { wp } from '../../helpers/common';
 import Icon from '../../assets/icons/Index';
 
 const defaultProfileImage = require('../../assets/images/profile-defaut.jpeg');
-const CreationPost = (size=24) => {
+const CreationPost = () => {
   const router = useRouter();
   const [selectedButton, setSelectedButton] = useState(null);
   const [postText, setPostText] = useState('');
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     color: theme.colors.blueDark,
   },
   input: {
-    height: "30%", 
+    height: 75, 
     padding: 10,
   },
   inputdescription: {
