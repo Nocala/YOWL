@@ -21,7 +21,7 @@ const creation_profil_2 = ({}) => {
         const response = await fetch('http://16.171.155.129:3000/sports');
         const data = await response.json();
         if (response.ok) {
-          console.log('Sports fetched successfully:', data);
+          //console.log('Sports fetched successfully:', data);
           setSports(data);
         } else {
           console.error('Failed to fetch sports:', data);
@@ -106,7 +106,6 @@ const creation_profil_2 = ({}) => {
       <ScreenWrapper>
         <StatusBar style='dark' />
         <View style={styles.container}>
-          <BackButton router={router} />
           {/* Logo */}
           <Image style={styles.logo} resizeMode='contain' source={require('../assets/images/LogoGo.png')} />
           <Text style={styles.TitleText}>

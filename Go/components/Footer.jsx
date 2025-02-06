@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, usePathname } from "expo-router";
 import { theme } from '../constants/theme';
 
 import Home from "../assets/icons/Home";
@@ -11,45 +11,58 @@ import Icon from "../assets/icons/Index";
 
 const Footer = () => {
     const router = useRouter();
+    const pathname = usePathname();
 
-    const handleNavigation = (path) => {
-        if (router.pathname === path) return; // Empêche l'exécution si on est déjà sur la page
-        router.push(path);
-    };
+    //console.log("Page actuelle :", pathname);
 
     return (
         <View style={styles.footer}>
             <TouchableOpacity 
                 style={styles.iconContainer} 
-                onPress={() => handleNavigation('/home')}
+                onPress={pathname !== '/home' ? () => { 
+                    //console.log("Navigation vers /home");
+                    router.push('/home');
+                } : null}
             >
                 <Home strokeWidth={1.5} color={theme.colors.blueDark} />
             </TouchableOpacity>
 
             <TouchableOpacity 
                 style={styles.iconContainer} 
-                onPress={() => handleNavigation('/search')}
+                onPress={pathname !== '/search' ? () => { 
+                    //console.log("Navigation vers /search");
+                    router.push('/search');
+                } : null}
             >
                 <Search strokeWidth={1.5} color={theme.colors.blueDark} />
             </TouchableOpacity>
 
             <TouchableOpacity 
                 style={[styles.iconContainer, styles.basketballContainer]} 
-                onPress={() => handleNavigation('/events')}
+                onPress={pathname !== '/events' ? () => { 
+                    //console.log("Navigation vers /events");
+                    router.push('/events');
+                } : null}
             >
                 <Basketball strokeWidth={1.5} color={theme.colors.orange} />
             </TouchableOpacity>
 
             <TouchableOpacity 
                 style={styles.iconContainer} 
-                onPress={() => handleNavigation('/news')}
+                onPress={pathname !== '/news' ? () => { 
+                    //console.log("Navigation vers /news");
+                    router.push('/news');
+                } : null}
             >
                 <News strokeWidth={1.5} color={theme.colors.blueDark} />
             </TouchableOpacity>
 
             <TouchableOpacity 
                 style={styles.iconContainer} 
-                onPress={() => handleNavigation('/creation_post')}
+                onPress={pathname !== '/creation_post' ? () => { 
+                    //console.log("Navigation vers /creation_post");
+                    router.push('/creation_post');
+                } : null}
             >
                 <Icon name='plus_2' strokeWidth={1.5} color={theme.colors.blueDark} />
             </TouchableOpacity>
@@ -65,6 +78,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.whiteorange,
         borderTopWidth: 0.2,
         borderTopColor: theme.colors.gray,
+        paddingBottom: 30
     },
     iconContainer: {
         alignItems: 'center',

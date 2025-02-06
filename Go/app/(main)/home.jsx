@@ -15,7 +15,7 @@ const Home = (size=24) => {
         const response = await fetch('http://16.171.155.129:3000/posts-txt');
         const data = await response.json();
         if (response.ok) {
-          console.log('Posts fetched successfully:', data.posts);
+          //console.log('Posts fetched successfully:', data.posts);
           setPosts(data.posts);
         } else {
           console.error('Failed to fetch posts:', data);
