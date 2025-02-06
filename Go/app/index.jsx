@@ -14,6 +14,7 @@ const index = () => {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text>index</Text>
                 <Button title="welcome" onPress={() => router.push('Welcome')} />
+                <Button title="parametre" onPress={() => router.push('parametre')} />
             </View>
             <Footer />
         </ScreenWrapper>
