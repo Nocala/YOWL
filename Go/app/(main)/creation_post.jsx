@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, TouchableWithoutFeedback, Keyboard, Image } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, TouchableWithoutFeedback, Keyboard, Image,} from 'react-native';
 import React, { useState } from 'react';
 import ScreenWrapper from '../../components/SreenWrapper';
 import BackButton from '../../components/BackButton';
@@ -103,7 +103,7 @@ const CreationPost = () => {
                             {selectedImage ? (
                                 <Image source={{ uri: selectedImage.uri }} style={styles.profileImage} />
                             ) : (
-                                <Icon name="plus"/>
+                                <Image source={require('../../assets/images/image par defaut.png')} style={styles.imagedefaut}/>
                             )}
                         </TouchableOpacity>
                       
@@ -229,5 +229,12 @@ const styles = StyleSheet.create({
   inputImage: {
     width: "100%",
     alignItems:"center"
+  },
+  imagedefaut:{
+    borderColor: theme.colors.gray,
+    borderWidth: 1,
+    borderRadius: theme.radius.xl,
+    width: "100%",
+    height: "100%"
   }
 });
