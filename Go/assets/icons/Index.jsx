@@ -13,6 +13,7 @@ import Plus_2 from './Plus_2'
 import Reels from './Reels'
 import Search from './Search'
 import User from './User'
+import Settings01Icon from './Settings'
 
 const icons = {
     home: Home,
@@ -27,6 +28,7 @@ const icons = {
     search: Search,
     user: User,
     plus_2: Plus_2,
+    settings: Settings01Icon
 }
 
 const Icon = ({name, ...props}) => {
