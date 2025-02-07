@@ -10,7 +10,7 @@ const Input = React.forwardRef(({ containerStyles, icon, ...props }, ref) => {
       <TextInput
         style={styles.input}
         placeholderTextColor={theme.colors.textLight}
-        ref={ref}  // Utilisation correcte de la ref
+        ref={ref}
         {...props}
       />
     </View>

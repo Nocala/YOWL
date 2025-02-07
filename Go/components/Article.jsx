@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
-    elevation: 5, // Add this line for Android shadow
+    elevation: 5,
   },
   leftColumn: {
     flex: 1,

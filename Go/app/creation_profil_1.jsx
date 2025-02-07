@@ -1,14 +1,13 @@
-import { 
-  Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert} from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'expo-router';
-import * as ImagePicker from 'expo-image-picker';
-import * as SecureStore from 'expo-secure-store';
-import ScreenWrapper from '../components/SreenWrapper';
-import { StatusBar } from 'expo-status-bar';
-import { theme } from '../constants/theme';
-import { hp, wp } from '../helpers/common';
-import Button from '../components/Button';
+import { Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { useRouter } from 'expo-router'
+import * as ImagePicker from 'expo-image-picker'
+import * as SecureStore from 'expo-secure-store'
+import ScreenWrapper from '../components/SreenWrapper'
+import { StatusBar } from 'expo-status-bar'
+import { theme } from '../constants/theme'
+import { hp, wp } from '../helpers/common'
+import Button from '../components/Button'
 
 const defaultProfileImage = require('../assets/images/profile-defaut.jpeg');
 
@@ -17,7 +16,7 @@ const creation_profil_1 = ({ size = 60 }) => {
   const [sports, setSports] = useState([]);
   const [selectedSports, setSelectedSports] = useState({});
   const [userId, setUserId] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null); // Image sélectionnée
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchUsername = async () => {
@@ -85,7 +84,6 @@ const creation_profil_1 = ({ size = 60 }) => {
       return;
     }
 
-    // Transformation des IDs en noms de sports
     const sportsNames = sportsArray.map(id => {
       const sport = sports.find(sport => sport.id_sport === parseInt(id));
       return sport ? sport.name : null;
@@ -95,7 +93,6 @@ const creation_profil_1 = ({ size = 60 }) => {
     formData.append("username", userId);
     formData.append("sports_pratiques", JSON.stringify(sportsNames));
 
-    // Vérifier si une image personnalisée a été sélectionnée
     if (selectedImage) {
       formData.append("photo_profil", {
         uri: selectedImage.uri,
@@ -103,7 +100,7 @@ const creation_profil_1 = ({ size = 60 }) => {
         name: `profile_${userId}.${selectedImage.uri.split('.').pop()}`
       });
     } else {
-      // Utilisation de l'image par défaut
+
       const defaultImageUri = Image.resolveAssetSource(defaultProfileImage).uri;
       formData.append("photo_profil", {
         uri: defaultImageUri,
@@ -172,7 +169,7 @@ const creation_profil_1 = ({ size = 60 }) => {
               ))}
             </View>
           </ScrollView>
-          <Button title="Suivant" buttonStyle={{paddingLeft: wp(10),paddingRight: wp(10)}} onPress={handleSubmit} />
+          <Button title="Suivant" buttonStyle={{ paddingLeft: wp(10), paddingRight: wp(10) }} onPress={handleSubmit} />
         </View>
       </ScreenWrapper>
     </ImageBackground>

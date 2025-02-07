@@ -1,13 +1,13 @@
-import React from 'react';
-import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
-import { theme } from '../constants/theme';
-import User from '../assets/icons/User';
+import React from 'react'
+import { View, Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { useRouter } from 'expo-router'
+import { theme } from '../constants/theme'
+import User from '../assets/icons/User'
 import Message from '../assets/icons/Message'
 
 const Header = () => {
     const router = useRouter();
-    
+
     return (
         <View style={styles.container}>
             <Image source={require('../assets/images/Go.png')} style={styles.logo} />
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     },
     logo: {
         width: 45,
-        height: 40, 
+        height: 40,
         resizeMode: 'cover',
     },
     icons: {
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     },
     icon: {
         marginLeft: 30,
-        transform: [{ scale: 1.3 }], // Increase the size of the basketball icon
+        transform: [{ scale: 1.3 }],
     },
 });
 

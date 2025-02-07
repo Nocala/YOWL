@@ -1,15 +1,14 @@
-import { StyleSheet, Text, View, ImageBackground, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import ScreenWrapper from '../components/SreenWrapper';
-import BackButton from '../components/BackButton';
-import { StatusBar } from 'expo-status-bar';
-import { theme } from '../constants/theme';
-import { hp, wp } from '../helpers/common';
-import { useRouter } from 'expo-router';
-import Button from '../components/Button';
-import * as SecureStore from 'expo-secure-store'; // Ajout de l'import pour SecureStore
+import { StyleSheet, Text, View, ImageBackground, Image, TouchableOpacity, ScrollView, Alert } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import ScreenWrapper from '../components/SreenWrapper'
+import { StatusBar } from 'expo-status-bar'
+import { theme } from '../constants/theme'
+import { hp, wp } from '../helpers/common'
+import { useRouter } from 'expo-router'
+import Button from '../components/Button'
+import * as SecureStore from 'expo-secure-store';
 
-const creation_profil_2 = ({}) => {
+const creation_profil_2 = ({ }) => {
   const router = useRouter();
   const [sports, setSports] = useState([]);
   const [selectedSports, setSelectedSports] = useState({});
@@ -43,7 +42,7 @@ const creation_profil_2 = ({}) => {
       }
     };
     fetchUsername();
-    
+
   }, []);
 
   const handlePress = (id_sport) => {
@@ -55,25 +54,25 @@ const creation_profil_2 = ({}) => {
 
   const handleSubmit = async () => {
     const sportsArray = Object.keys(selectedSports).filter((id) => selectedSports[id]);
-  
+
     if (sportsArray.length === 0) {
       Alert.alert('Attention', "Choisis au moins un sport pour continuer 🏀");
       return;
     }
-  
-    // Transformation des IDs en noms de sports
+
+
     const sportsNames = sportsArray.map(id => {
       const sport = sports.find(sport => sport.id_sport === parseInt(id));
       return sport ? sport.name : null;
     });
-  
+
     const formData = {
-      username: userId, // Utilisation de la valeur récupérée du SecureStore
-      sports_suivis: sportsNames, // Envoi des noms des sports suivis
+      username: userId,
+      sports_suivis: sportsNames,
     };
-  
-    console.log("Username envoyé à l'API:", userId); // Debug ici pour vérifier la valeur
-  
+
+    //console.log("Username envoyé à l'API:", userId);
+
     if (!userId) {
       alert("Le username n'a pas été récupéré. Assurez-vous qu'il est stocké correctement.");
       return;
@@ -87,10 +86,10 @@ const creation_profil_2 = ({}) => {
         },
         body: JSON.stringify(formData),
       });
-  
+
       const data = await response.json();
       console.log("Réponse de l'API:", data);
-  
+
       if (response.ok) {
         Alert.alert('Ca y est', "Ton profil a été créé avec succès 🎉");
         router.push('home');
@@ -110,7 +109,7 @@ const creation_profil_2 = ({}) => {
           {/* Logo */}
           <Image style={styles.logo} resizeMode='contain' source={require('../assets/images/LogoGo.png')} />
           <Text style={styles.TitleText}>
-            Sélectionne les sports que tu veux suivre : 
+            Sélectionne les sports que tu veux suivre :
           </Text>
           <ScrollView contentContainerStyle={styles.containerSports} showsVerticalScrollIndicator={false}>
             {sports.map((sport) => (
@@ -128,7 +127,7 @@ const creation_profil_2 = ({}) => {
               </TouchableOpacity>
             ))}
           </ScrollView>
-          <Button title='Suivant' buttonStyle={{paddingLeft: wp(10),paddingRight: wp(10)}} onPress={handleSubmit} />
+          <Button title='Suivant' buttonStyle={{ paddingLeft: wp(10), paddingRight: wp(10) }} onPress={handleSubmit} />
         </View>
       </ScreenWrapper>
     </ImageBackground>

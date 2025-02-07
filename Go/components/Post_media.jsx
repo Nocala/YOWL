@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
-import { theme } from '../constants/theme';
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, Image } from 'react-native'
+import { theme } from '../constants/theme'
 
 const Post_media = ({ description, username, likes, id_media }) => {
   const [imageUrl, setImageUrl] = useState(null);
@@ -11,7 +11,6 @@ const Post_media = ({ description, username, likes, id_media }) => {
       const url = `http://16.171.155.129:3000/media/id/${id_media}`;
       setImageUrl(url);
 
-      // Fetch image size
       Image.getSize(url, (width, height) => {
         setImageSize({ width, height });
       });
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   //likes: {
-    //fontSize: 12,
-    //color: theme.colors.orange,
+  //fontSize: 12,
+  //color: theme.colors.orange,
   //},
 });

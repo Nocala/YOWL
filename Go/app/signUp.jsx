@@ -1,14 +1,14 @@
-import { Alert, View, Text, TouchableWithoutFeedback, Keyboard, ImageBackground, StyleSheet, Pressable, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import React, { useRef, useState, useEffect } from 'react';
-import BackButton from '../components/BackButton';
-import Input from '../components/Input';
-import Button from '../components/Button';
-import { useRouter } from 'expo-router';
-import { hp, wp } from '../helpers/common';
-import { theme } from '../constants/theme';
-import ScreenWrapper from '../components/SreenWrapper';
-import { StatusBar } from 'expo-status-bar';
-import * as SecureStore from 'expo-secure-store';
+import { Alert, View, Text, TouchableWithoutFeedback, Keyboard, ImageBackground, StyleSheet, Pressable, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
+import React, { useRef, useState, useEffect } from 'react'
+import BackButton from '../components/BackButton'
+import Input from '../components/Input'
+import Button from '../components/Button'
+import { useRouter } from 'expo-router'
+import { hp, wp } from '../helpers/common'
+import { theme } from '../constants/theme'
+import ScreenWrapper from '../components/SreenWrapper'
+import { StatusBar } from 'expo-status-bar'
+import * as SecureStore from 'expo-secure-store'
 
 const SignUp = () => {
     const router = useRouter();

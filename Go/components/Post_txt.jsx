@@ -1,7 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
-import Icon from 'react-native-vector-icons/Feather';
-import { theme } from '../constants/theme';
+import { StyleSheet, Text, View } from 'react-native'
+import React from 'react'
+import { theme } from '../constants/theme'
 
 const Post_txt = ({ title, description, username, likes }) => {
   return (

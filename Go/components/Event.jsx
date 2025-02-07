@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, Alert } from 'react-native';
-import { theme } from '../constants/theme';
-import Button from '../components/Button';
-import * as SecureStore from 'expo-secure-store';
+import React, { useEffect, useState } from 'react'
+import { View, Text, Image, StyleSheet, Alert } from 'react-native'
+import { theme } from '../constants/theme'
+import Button from '../components/Button'
+import * as SecureStore from 'expo-secure-store'
 
 const Event = ({ name, date, lieu, sport, genre, description, id_media, eventId, token }) => {
   const [imageUrl, setImageUrl] = useState(null);
@@ -37,25 +37,25 @@ const Event = ({ name, date, lieu, sport, genre, description, id_media, eventId,
     try {
       const token = await SecureStore.getItemAsync('authToken');
       console.log("Token récupéré :", token);
-  
+
       if (!token) {
         Alert.alert(
-          'Attention', 
-          'Tu dois d\'abord te connecter pour participer à un événement.', 
+          'Attention',
+          'Tu dois d\'abord te connecter pour participer à un événement.',
           [
             { text: 'OK', onPress: () => navigation.navigate('Login') }
           ]
         );
         return;
       }
-  
+
       Alert.alert(
         'Confirmation',
         'Tu veux vraiment participer à cet événement ?',
         [
           { text: 'En fait non', style: 'cancel' },
-          { 
-            text: 'Oui !', 
+          {
+            text: 'Oui !',
             onPress: async () => {
               try {
                 console.log(`Envoi de la requête avec token: ${token}`);
@@ -66,15 +66,15 @@ const Event = ({ name, date, lieu, sport, genre, description, id_media, eventId,
                     Authorization: `Bearer ${token}`,
                   },
                 });
-  
+
                 const result = await response.json();
                 console.log("Réponse API:", result);
-  
+
                 if (!response.ok) {
                   Alert.alert('Oups...', result.error || 'Une erreur est survenue.');
                   return;
                 }
-  
+
                 Alert.alert('C\'est bon !', 'Tu es inscrit à cet événement !', [
                   { text: 'OK', onPress: () => setRefresh(!refresh) }
                 ]);
@@ -82,7 +82,7 @@ const Event = ({ name, date, lieu, sport, genre, description, id_media, eventId,
                 console.error('Erreur lors de l\'inscription:', error);
                 Alert.alert('Oups...', 'Impossible de s\'inscrire pour le moment.');
               }
-            } 
+            }
           }
         ]
       );
@@ -108,14 +108,14 @@ const Event = ({ name, date, lieu, sport, genre, description, id_media, eventId,
       </Text>
 
       <View style={styles.buttonContainer}>
-        <Button 
-          title="Je veux participer !" 
-          buttonStyle={styles.partButton} 
-          textStyle={styles.buttonText} 
+        <Button
+          title="Je veux participer !"
+          buttonStyle={styles.partButton}
+          textStyle={styles.buttonText}
           onPress={() => {
             console.log("Bouton cliqué !");
             handleParticipation();
-          }} 
+          }}
         />
       </View>
     </View>

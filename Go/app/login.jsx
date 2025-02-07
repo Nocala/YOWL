@@ -1,17 +1,14 @@
-import { 
-    Alert, ImageBackground, Pressable, StyleSheet, Text, View, 
-    Platform, TouchableWithoutFeedback, Keyboard, Animated 
-} from 'react-native';
-import React, { useRef, useState, useEffect } from 'react';
-import * as SecureStore from 'expo-secure-store';
-import ScreenWrapper from '../components/SreenWrapper';
-import { StatusBar } from 'expo-status-bar';
-import BackButton from '../components/BackButton';
-import { useRouter } from 'expo-router';
-import { hp, wp } from '../helpers/common';
-import { theme } from '../constants/theme';
-import Input from '../components/Input';
-import Button from '../components/Button';
+import { Alert, ImageBackground, Pressable, StyleSheet, Text, View, TouchableWithoutFeedback, Keyboard, Animated } from 'react-native'
+import React, { useRef, useState, useEffect } from 'react'
+import * as SecureStore from 'expo-secure-store'
+import ScreenWrapper from '../components/SreenWrapper'
+import { StatusBar } from 'expo-status-bar'
+import BackButton from '../components/BackButton'
+import { useRouter } from 'expo-router'
+import { hp, wp } from '../helpers/common'
+import { theme } from '../constants/theme'
+import Input from '../components/Input'
+import Button from '../components/Button'
 
 const Login = () => {
     const router = useRouter();
@@ -28,7 +25,7 @@ const Login = () => {
             () => {
                 setKeyboardVisible(true);
                 Animated.timing(translateY, {
-                    toValue: -150, // Ajuste la distance en fonction de la hauteur du clavier
+                    toValue: -150,
                     duration: 300,
                     useNativeDriver: true,
                 }).start();
@@ -112,7 +109,7 @@ const Login = () => {
                     <ScreenWrapper>
                         <StatusBar style='dark' />
                         <Animated.View style={[styles.innerContainer, { transform: [{ translateY }] }]}>
-                            <BackButton onPress={() => router.push('/Welcome')} /> 
+                            <BackButton onPress={() => router.push('/Welcome')} />
 
                             {/* Welcome */}
                             <View>
@@ -140,7 +137,7 @@ const Login = () => {
                                     autoCorrect={false}
                                     value={password}
                                     onChangeText={setPassword}
-                                    returnKeyType="go" 
+                                    returnKeyType="go"
                                     onSubmitEditing={handleLogin}
                                 />
                                 <Text style={styles.forgotPassword}>
