@@ -11,7 +11,7 @@ const Post_txt = ({ title, description, username, likes }) => {
         <Text style={styles.description}>{description}</Text>
       </View>
       <View style={styles.informationpost}>
-        <Text style={styles.username}>{username}</Text>
+        <Text style={styles.username}>@{username}</Text>
         {/*<View style={styles.likesContainer}>
           <Icon name="heart" size={20} color="red" />
           <Text style={styles.likes}>{likes}</Text>
@@ -36,21 +36,21 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   username: {
-    fontSize: 15,
-    fontWeight: 'semibold',
+    fontSize: 12,
     marginBottom: 5,
-    color: theme.colors.blueDark
+    color: theme.colors.blueDark,
+    fontStyle: 'italic',
   },
   title: {
     fontSize: 20,
-    fontWeight: theme.fonts.bold,
-    marginBottom: 5,
-    color: theme.colors.orange
+    fontWeight: theme.fonts.medium,
+    marginBottom: 8,
+    color: theme.colors.blueDark
   },
   description: {
     fontSize: 15,
     color: theme.colors.blueDark,
-    marginBottom: 10,
+    marginBottom: 5,
   },
   //likesContainer: {
     //flexDirection: 'row',
