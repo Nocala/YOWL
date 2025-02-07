@@ -1,5 +1,5 @@
 import { Alert, View, Text, TouchableWithoutFeedback, Keyboard, ImageBackground, StyleSheet, Pressable } from 'react-native';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import BackButton from '../components/BackButton';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -23,6 +23,11 @@ const SignUp = () => {
     const [hasNumber, setHasNumber] = useState(false);
     const [hasUppercase, setHasUppercase] = useState(false);
     const [hasSpecialChar, setHasSpecialChar] = useState(false);
+
+    const usernameRef = useRef(null);
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
+    const confirmPasswordRef = useRef(null);
 
     const validatePassword = (password) => {
         setIsLengthValid(password.length >= 12);
@@ -111,37 +116,50 @@ const SignUp = () => {
                             Remplis tous les champs pour créer un nouveau compte 
                             </Text>
                             <Input
+                                ref={usernameRef}
                                 placeholder="Nom d'utilisateur"
                                 value={username}
                                 onChangeText={setUsername}
+                                returnKeyType="next"
+                                onSubmitEditing={() => emailRef.current && emailRef.current.focus()}
                             />
                             <Input
+                                ref={emailRef}
                                 placeholder='Adresse email'
                                 keyboardType="email-address"
                                 autoCapitalize="none"
                                 autoCorrect={false}
                                 value={email}
                                 onChangeText={setEmail}
+                                returnKeyType="next"
+                                onSubmitEditing={() => confirmPasswordRef.current && confirmPasswordRef.current.focus()}
                             />
                             <Input
+                                ref={passwordRef}
                                 placeholder='Mot de passe'
                                 secureTextEntry
                                 autoCapitalize="none"
                                 autoCorrect={false}
                                 value={password}
                                 onChangeText={onPasswordChange}
+                                returnKeyType="next"
+                                onSubmitEditing={() => passwordRef.current && passwordRef.current.focus()}
                             />
                             <Text style={[styles.securedPassword, isLengthValid && styles.valid]}>•12 caractères</Text>
                             <Text style={[styles.securedPassword, hasNumber && styles.valid]}>•Un chiffre</Text>
                             <Text style={[styles.securedPassword, hasUppercase && styles.valid]}>•Une majuscule</Text>
                             <Text style={[styles.securedPassword, hasSpecialChar && styles.valid]}>•Au moins un caractère spécial (!@#$%^&*)</Text>
+
                             <Input
+                                ref={confirmPasswordRef}
                                 placeholder='Confirmation du mot de passe'
                                 secureTextEntry
                                 autoCapitalize="none"
                                 autoCorrect={false}
                                 value={confirmPassword}
                                 onChangeText={setConfirmPassword}
+                                returnKeyType="go"
+                                onSubmitEditing={onSubmit}
                             />
                             <Button title='Créer mon compte' loading={loading} onPress={onSubmit} />
                         </View>

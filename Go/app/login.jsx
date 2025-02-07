@@ -15,6 +15,7 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const passwordRef = useRef(null);
 
     const handleLogin = async () => {
         if (!email || !password) {
@@ -93,14 +94,20 @@ const Login = () => {
                                     autoCorrect={false}
                                     value={email}
                                     onChangeText={setEmail}
+                                    returnKeyType="next"
+                                    onSubmitEditing={() => passwordRef.current && passwordRef.current.focus()}
+
                                 />
                                 <Input
+                                    ref={passwordRef}
                                     placeholder='Mot de passe'
                                     secureTextEntry
                                     autoCapitalize="none"
                                     autoCorrect={false}
                                     value={password}
                                     onChangeText={setPassword}
+                                    returnKeyType="go" 
+                                    onSubmitEditing={handleLogin}
                                 />
                                 <Text style={styles.forgotPassword}>
                                     Mot de passe oublié ?

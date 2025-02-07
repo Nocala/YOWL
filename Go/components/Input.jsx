@@ -3,19 +3,19 @@ import React from 'react'
 import { theme } from '../constants/theme'
 import { hp } from '../helpers/common'
 
-const Input = ({ containerStyles, icon, inputRef, ...props }) => {
+const Input = React.forwardRef(({ containerStyles, icon, ...props }, ref) => {
   return (
     <View style={[styles.container, containerStyles]}>
       {icon}
       <TextInput
         style={styles.input}
         placeholderTextColor={theme.colors.textLight}
-        ref={inputRef}
+        ref={ref}  // Utilisation correcte de la ref
         {...props}
       />
     </View>
   )
-}
+})
 
 export default Input
 
