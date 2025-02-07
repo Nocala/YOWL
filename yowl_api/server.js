@@ -1006,3 +1006,41 @@ app.put('/profil-2-2/', (req, res) => {
     res.status(200).json({ message: 'Profil mis à jour avec succès' });
   });
 });
+
+
+// Route pour récupérer un profil par son user_id
+app.get('/profil/:user_id', (req, res) => {
+  const { user_id } = req.params;
+
+  console.log('Requête pour récupérer le profil avec user_id:', user_id); // Log the user_id
+
+  // Récupérer le username à partir du user_id
+  db.query('SELECT username FROM USERS WHERE user_id = ?', [user_id], (err, userResults) => {
+    if (err) {
+      console.error('Erreur lors de la récupération du username :', err);
+      return res.status(500).json({ error: 'Désolé, on a une erreur de notre côté 😅' });
+    }
+
+    if (userResults.length === 0) {
+      return res.status(404).json({ error: 'Utilisateur non trouvé 🫥' });
+    }
+
+    const username = userResults[0].username;
+
+    // Utiliser le username pour récupérer le profil
+    db.query('SELECT * FROM PROFIL WHERE username = ?', [username], (err, profileResults) => {
+      if (err) {
+        console.error('Erreur lors de la récupération du profil :', err);
+        return res.status(500).json({ error: 'Désolé, on a une erreur de notre côté 😅' });
+      }
+
+      console.log('Résultats de la requête:', profileResults); // Log the results
+
+      if (profileResults.length === 0) {
+        return res.status(404).json({ error: 'Profil non trouvé 🫥' });
+      }
+
+      res.json(profileResults[0]);
+    });
+  });
+});
