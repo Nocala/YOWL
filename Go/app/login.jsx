@@ -1,5 +1,8 @@
-import { Alert, ImageBackground, Pressable, StyleSheet, Text, View, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import React, { useRef, useState } from 'react';
+import { 
+    Alert, ImageBackground, Pressable, StyleSheet, Text, View, 
+    Platform, TouchableWithoutFeedback, Keyboard, Animated 
+} from 'react-native';
+import React, { useRef, useState, useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import ScreenWrapper from '../components/SreenWrapper';
 import { StatusBar } from 'expo-status-bar';
@@ -16,6 +19,38 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const passwordRef = useRef(null);
+    const [keyboardVisible, setKeyboardVisible] = useState(false);
+    const translateY = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            () => {
+                setKeyboardVisible(true);
+                Animated.timing(translateY, {
+                    toValue: -150, // Ajuste la distance en fonction de la hauteur du clavier
+                    duration: 300,
+                    useNativeDriver: true,
+                }).start();
+            }
+        );
+        const keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            () => {
+                setKeyboardVisible(false);
+                Animated.timing(translateY, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true,
+                }).start();
+            }
+        );
+
+        return () => {
+            keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
+        };
+    }, []);
 
     const handleLogin = async () => {
         if (!email || !password) {
@@ -76,7 +111,7 @@ const Login = () => {
                     style={styles.background}>
                     <ScreenWrapper>
                         <StatusBar style='dark' />
-                        <View style={styles.innerContainer}>
+                        <Animated.View style={[styles.innerContainer, { transform: [{ translateY }] }]}>
                             <BackButton onPress={() => router.push('/Welcome')} /> 
 
                             {/* Welcome */}
@@ -96,7 +131,6 @@ const Login = () => {
                                     onChangeText={setEmail}
                                     returnKeyType="next"
                                     onSubmitEditing={() => passwordRef.current && passwordRef.current.focus()}
-
                                 />
                                 <Input
                                     ref={passwordRef}
@@ -122,10 +156,12 @@ const Login = () => {
                                     Tu n'as pas de compte ?
                                 </Text>
                                 <Pressable onPress={() => router.push('signUp')}>
-                                    <Text style={[styles.footerText, { color: theme.colors.orange, fontWeight: theme.fonts.semibold }]}>Inscris-toi ici !</Text>
+                                    <Text style={[styles.footerText, { color: theme.colors.orange, fontWeight: theme.fonts.semibold }]}>
+                                        Inscris-toi ici !
+                                    </Text>
                                 </Pressable>
                             </View>
-                        </View>
+                        </Animated.View>
                     </ScreenWrapper>
                 </ImageBackground>
             </View>

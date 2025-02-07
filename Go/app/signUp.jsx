@@ -1,5 +1,5 @@
-import { Alert, View, Text, TouchableWithoutFeedback, Keyboard, ImageBackground, StyleSheet, Pressable } from 'react-native';
-import React, { useRef, useState } from 'react';
+import { Alert, View, Text, TouchableWithoutFeedback, Keyboard, ImageBackground, StyleSheet, Pressable, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import React, { useRef, useState, useEffect } from 'react';
 import BackButton from '../components/BackButton';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -28,6 +28,10 @@ const SignUp = () => {
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
     const confirmPasswordRef = useRef(null);
+
+    const scrollViewRef = useRef(null); // Référence du ScrollView
+
+    const [keyboardVisible, setKeyboardVisible] = useState(false);
 
     const validatePassword = (password) => {
         setIsLengthValid(password.length >= 12);
@@ -96,92 +100,119 @@ const SignUp = () => {
         }
     };
 
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+
+        return () => {
+            keyboardDidShowListener.remove();
+            keyboardDidHideListener.remove();
+        };
+    }, []);
+
+    const handleFocusConfirmPassword = () => {
+        //Keyboard.dismiss(); 
+        setTimeout(() => {
+            scrollViewRef.current.scrollTo({ y: 200, animated: true });
+        }, 300);
+    };
+
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ImageBackground source={require('../assets/images/background_login.png')}
-                style={styles.background}>
-                <ScreenWrapper>
-                    <StatusBar style='dark' />
-                    <View style={styles.innerContainer}>
-                        <BackButton onPress={() => router.push('/Welcome')} />
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <ScrollView ref={scrollViewRef} contentContainerStyle={styles.scrollViewContainer}>
+                    <ImageBackground source={require('../assets/images/background_login.png')} style={styles.background}>
+                        <ScreenWrapper>
+                            <StatusBar style='dark' />
+                            <View style={styles.innerContainer}>
+                                <BackButton onPress={() => router.push('/Welcome')} />
 
-                        {/* Welcome */}
-                        <View>
-                            <Text style={styles.welcomText}>C'est parti !</Text>
-                        </View>
+                                {/* Welcome */}
+                                <View>
+                                    <Text style={styles.welcomText}>C'est parti !</Text>
+                                </View>
 
-                        {/* form */}
-                        <View style={styles.form}>
-                            <Text style={{ fontSize: hp(1.5), color: theme.colors.text }}>
-                            Remplis tous les champs pour créer un nouveau compte 
-                            </Text>
-                            <Input
-                                ref={usernameRef}
-                                placeholder="Nom d'utilisateur"
-                                value={username}
-                                onChangeText={setUsername}
-                                returnKeyType="next"
-                                onSubmitEditing={() => emailRef.current && emailRef.current.focus()}
-                            />
-                            <Input
-                                ref={emailRef}
-                                placeholder='Adresse email'
-                                keyboardType="email-address"
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                                value={email}
-                                onChangeText={setEmail}
-                                returnKeyType="next"
-                                onSubmitEditing={() => confirmPasswordRef.current && confirmPasswordRef.current.focus()}
-                            />
-                            <Input
-                                ref={passwordRef}
-                                placeholder='Mot de passe'
-                                secureTextEntry
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                                value={password}
-                                onChangeText={onPasswordChange}
-                                returnKeyType="next"
-                                onSubmitEditing={() => passwordRef.current && passwordRef.current.focus()}
-                            />
-                            <Text style={[styles.securedPassword, isLengthValid && styles.valid]}>•12 caractères</Text>
-                            <Text style={[styles.securedPassword, hasNumber && styles.valid]}>•Un chiffre</Text>
-                            <Text style={[styles.securedPassword, hasUppercase && styles.valid]}>•Une majuscule</Text>
-                            <Text style={[styles.securedPassword, hasSpecialChar && styles.valid]}>•Au moins un caractère spécial (!@#$%^&*)</Text>
+                                {/* form */}
+                                <View style={styles.form}>
+                                    <Text style={{ fontSize: hp(1.5), color: theme.colors.text }}>
+                                        Remplis tous les champs pour créer un nouveau compte
+                                    </Text>
+                                    <Input
+                                        ref={usernameRef}
+                                        placeholder="Nom d'utilisateur"
+                                        value={username}
+                                        onChangeText={setUsername}
+                                        returnKeyType="next"
+                                        onSubmitEditing={() => emailRef.current && emailRef.current.focus()}
+                                    />
+                                    <Input
+                                        ref={emailRef}
+                                        placeholder='Adresse email'
+                                        keyboardType="email-address"
+                                        autoCapitalize="none"
+                                        autoCorrect={false}
+                                        value={email}
+                                        onChangeText={setEmail}
+                                        returnKeyType="next"
+                                        onSubmitEditing={() => passwordRef.current && passwordRef.current.focus()}
+                                    />
+                                    <Input
+                                        ref={passwordRef}
+                                        placeholder='Mot de passe'
+                                        secureTextEntry
+                                        autoCapitalize="none"
+                                        autoCorrect={false}
+                                        value={password}
+                                        onChangeText={onPasswordChange}
+                                        returnKeyType="next"
+                                        onSubmitEditing={() => confirmPasswordRef.current && confirmPasswordRef.current.focus()}
+                                    />
+                                    <Text style={[styles.securedPassword, isLengthValid && styles.valid]}>•12 caractères</Text>
+                                    <Text style={[styles.securedPassword, hasNumber && styles.valid]}>•Un chiffre</Text>
+                                    <Text style={[styles.securedPassword, hasUppercase && styles.valid]}>•Une majuscule</Text>
+                                    <Text style={[styles.securedPassword, hasSpecialChar && styles.valid]}>•Au moins un caractère spécial (!@#$%^&*)</Text>
 
-                            <Input
-                                ref={confirmPasswordRef}
-                                placeholder='Confirmation du mot de passe'
-                                secureTextEntry
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                                value={confirmPassword}
-                                onChangeText={setConfirmPassword}
-                                returnKeyType="go"
-                                onSubmitEditing={onSubmit}
-                            />
-                            <Button title='Créer mon compte' loading={loading} onPress={onSubmit} />
-                        </View>
-                        {/* footer */}
-                        <View style={styles.footer}>
-                            <Text style={styles.footerText}>
-                                J'ai déja un compte :
-                            </Text>
-                            <Pressable onPress={() => router.push('login')}>
-                                <Text style={[styles.footerText, { color: theme.colors.orange, fontWeight: theme.fonts.semibold }]}>Je me connecte !</Text>
-                            </Pressable>
-                        </View>
-                    </View>
-                </ScreenWrapper>
-            </ImageBackground>
-        </TouchableWithoutFeedback>
+                                    <Input
+                                        ref={confirmPasswordRef}
+                                        placeholder='Confirmation du mot de passe'
+                                        secureTextEntry
+                                        autoCapitalize="none"
+                                        autoCorrect={false}
+                                        value={confirmPassword}
+                                        onChangeText={setConfirmPassword}
+                                        returnKeyType="go"
+                                        onSubmitEditing={onSubmit}
+                                        onFocus={handleFocusConfirmPassword}  // Défilement vers le bas
+                                    />
+                                    <Button title='Créer mon compte' loading={loading} onPress={onSubmit} />
+                                </View>
+                                {/* footer */}
+                                <View style={styles.footer}>
+                                    <Text style={styles.footerText}>
+                                        J'ai déja un compte :
+                                    </Text>
+                                    <Pressable onPress={() => router.push('login')}>
+                                        <Text style={[styles.footerText, { color: theme.colors.orange, fontWeight: theme.fonts.semibold }]}>Je me connecte !</Text>
+                                    </Pressable>
+                                </View>
+                            </View>
+                        </ScreenWrapper>
+                    </ImageBackground>
+                </ScrollView>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 };
 
 export default SignUp;
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
     background: {
         flex: 1,
         justifyContent: 'center',
@@ -229,4 +260,7 @@ const styles = StyleSheet.create({
         color: theme.colors.text,
         fontSize: hp(1.6),
     },
+    scrollViewContainer: {
+        flexGrow: 1,
+    }
 });
