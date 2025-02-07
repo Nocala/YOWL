@@ -10,7 +10,7 @@ const Header = () => {
     
     return (
         <View style={styles.container}>
-            <Image source={require('../assets/images/LogoGo.png')} style={styles.logo} />
+            <Image source={require('../assets/images/Go.png')} style={styles.logo} />
             <View style={styles.icons}>
                 <TouchableOpacity style={styles.icon} onPress={() => router.push('/profile')}>
                     <User strokeWidth={1.5} color={theme.colors.textDark} />
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     logo: {
         width: 45,
         height: 40, 
-        resizeMode: 'contain',
+        resizeMode: 'cover',
     },
     icons: {
         flexDirection: 'row',
