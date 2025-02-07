@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { StyleSheet, ScrollView, View } from 'react-native'
+import React, {useEffect, useState } from 'react'
+import { StyleSheet, ScrollView, View, Text } from 'react-native'
 import ScreenWrapper from '../../components/SreenWrapper';
 import Article from '../../components/Article'
 import Header from '../../components/Header'
@@ -28,19 +28,22 @@ const News = () => {
       <View style={styles.container}>
         <Header />
         <ScrollView style={styles.scrollView}>
-          {articles.map(article => (
-            <Article
-              key={article.id_article}
-              id_article={article.id_article}
-              title={article.titre}
-              description={article.description}
-              body={article.corps}
-              sport={article.sport}
-              date={article.date}
-              id_media={article.id_media}
-              author={article.auteur}
-            />
-          ))}
+
+        <Text style={styles.titleText}>News</Text>
+
+        {articles.map(article => (
+          <Article
+            key={article.id_article}
+            id_article={article.id_article}
+            title={article.titre}
+            description={article.description}
+            body={article.corps}
+            sport={article.sport}
+            date={article.date}
+            id_media={article.id_media}
+            author={article.auteur}
+          />
+        ))}
         </ScrollView>
         <Footer />
       </View>
@@ -57,5 +60,12 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  titleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: theme.colors.orange,
+    marginVertical: 20,
+    paddingHorizontal: 10,
   },
 })

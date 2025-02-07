@@ -60,6 +60,8 @@ const Home = () => {
     <ScreenWrapper bg={theme.colors.whiteorange}>
       <Header />
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <Text style={styles.headerText}>Pour toi</Text>
+
         {mergedPosts.map((post, index) => 
           post.post_txt_id ? (
             <Post_txt 
@@ -88,6 +90,13 @@ export default Home;
 const styles = StyleSheet.create({
   scrollViewContent: {
     padding: 10,
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: theme.colors.orange,
+    marginLeft: 10,
   },
   pluspost: {
     height: 100,

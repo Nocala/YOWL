@@ -1,52 +1,50 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Image, Button, ScrollView } from 'react-native'
 import React from 'react'
+import { theme } from '../../constants/theme'
+import ScreenWrapper from '../../components/SreenWrapper'
+import Header from '../../components/Header'
+import Footer from '../../components/Footer'
 import ScreenWrapper from '../../components/SreenWrapper'
 import { theme } from '../../constants/theme'
 import Footer from '../../components/Footer'
 import Icon from '../../assets/icons/Index'
 
-const defaultProfileImage = require('../../assets/images/profile-defaut.jpeg');
-const profile = ({size=30}) => {
+const profile = () => {
+  // Données fictives pour le template
+  const userData = {
+    username: 'JohnDoe',
+    nb_abonnes: 120,
+    nb_abonnements: 150,
+    photo_profil: 'https://example.com/photo.jpg',
+    bio: 'This is a sample bio'
+  }
+
   return (
     <ScreenWrapper bg={theme.colors.whiteorange}>
-      <View style={styles.container}>
-        <View style={styles.containerinfoprofil}>
-          <View style={styles.containerinfoprimaire}>
-            <View style={styles.firstblock}>
-              <Text style={styles.username}>Username</Text>
-              <View style={styles.containersuivieandfollowers}>
-                <View style={styles.suivie}>
-                  <Text style={styles.nombresuivie}>190</Text>
-                  <Text style={styles.textnormal}>Suivies</Text>
-                </View>
-                <View style={styles.followers}>
-                  <Text style={styles.nombrefollowers}>125</Text>
-                  <Text style={styles.textnormal}>Followers</Text>
-                </View>
-              </View>
-            </View>
-            <Image source={defaultProfileImage} style={styles.profileImage} />
-            <Icon name="settings" size={size} color={theme.colors.blueDark}/>
+      <Header />
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.profileContainer}>
+          <Image source={{ uri: userData.photo_profil }} style={styles.profileImage} />
+          <Text style={styles.username}>{userData.username}</Text>
+          <Text style={styles.bio}>{userData.bio}</Text>
+          <View style={styles.statsContainer}>
+            <Text style={styles.stats}>Abonnés: {userData.nb_abonnes}</Text>
+            <Text style={styles.stats}>Abonnements: {userData.nb_abonnements}</Text>
           </View>
-          <View style={styles.containerbio}>
-            <Text style={styles.bio}>Bio</Text>
-            <Text style={styles.textnormal}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras vel enim nulla. Mauris posuere mauris et facilisis posuere. Praesent sagittis mauris a lacinia iaculis. Duis ut mi suscipit, venenatis ligula bibendum, blandit erat.
-            </Text>
+          <View style={styles.buttonContainer}>
+            <Button title="Modifier Profil" onPress={() => {}} color={theme.colors.primary} />
+            <Button title="Partager Profil" onPress={() => {}} color={theme.colors.primary} />
           </View>
-          <View style={styles.containerbouttonpartage}>
-            <TouchableOpacity style={styles.boutton}>
-              <Text style={styles.textbutton}>Modifie ton profil</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.boutton}>
-              <Text style={styles.textbutton}>Partage ton profil</Text>
-            </TouchableOpacity>
+          <View style={styles.buttonContainer}>
+            <Button title="Textes" onPress={() => {}} color={theme.colors.primary} />
+            <Button title="Médias" onPress={() => {}} color={theme.colors.primary} />
           </View>
         </View>
-        <ScrollView>
-
-        </ScrollView>
-      </View>
+        <View style={styles.postsContainer}>
+          {/* Ici, vous pouvez ajouter le code pour afficher les posts de l'utilisateur */}
+          <Text>Posts de l'utilisateur</Text>
+        </View>
+      </ScrollView>
       <Footer />
     </ScreenWrapper>
   )
@@ -55,64 +53,54 @@ const profile = ({size=30}) => {
 export default profile
 
 const styles = StyleSheet.create({
-  container: {
-
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'flex-start',
   },
-  containerinfoprofil: {
-
-  },
-  containerinfoprimaire: {
-
-  },
-  firstblock: {
-
-  },
-  username: {
-    color: theme.colors.blueDark,
-    fontSize: 37
-  },
-  containersuivieandfollowers: {
-
-  },
-  suivie: {
-    
-  },
-  nombresuivie: {
-    color: theme.colors.blueLight,
-    fontSize: 27
-  },
-  textnormal: {
-    color: theme.colors.blueDark,
-    fontSize: 17,
-  },
-  followers: {
-
-  },
-  nombrefollowers: {
-    color: theme.colors.orange,
-    fontSize: 27
+  profileContainer: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    padding: 20,
+    backgroundColor: theme.colors.whiteorange,
+    marginTop: 10, // Adjust this value to control the spacing from the header
   },
   profileImage: {
-    borderColor: theme.colors.blueDark,
-    borderWidth: 1
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10
   },
-  containerbio: {
-
+  username: {
+    fontSize: 20,
+    fontWeight: theme.fonts.bold,
+    color: theme.colors.textDark,
+    marginBottom: 5
   },
   bio: {
-    color: theme.colors.orange,
-    fontSize: 17,
+    fontSize: 16,
+    textAlign: 'center',
+    color: theme.colors.textLight,
+    marginBottom: 10
   },
-  containerbouttonpartage: {
-
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    marginBottom: 20
   },
-  button: {
-    borderColor: theme.colors.blueDark,
-    borderWidth: 1,
-    justifyContent: "center"
+  stats: {
+    fontSize: 16,
+    color: theme.colors.text
   },
-  textbutton: {
-    color: theme.colors.orange,
-    fontSize: 13,
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
+    marginBottom: 10
+  },
+  postsContainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: theme.colors.whiteorange
   }
 })

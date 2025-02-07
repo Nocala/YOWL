@@ -1,35 +1,57 @@
-import { StyleSheet, Text, View, TextInput, FlatList } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TextInput, FlatList, Image } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import BackButton from '../../components/BackButton'
 import Footer from '../../components/Footer'
 import { theme } from '../../constants/theme'
 import ScreenWrapper from '../../components/SreenWrapper'
 import { useRouter } from 'expo-router'; // Assurez-vous d'importer depuis 'expo-router'
 
-
 const messages = () => {
   const router = useRouter(); // Utilisez useRouter pour obtenir l'objet router
-  const profiles = [
-    { id: '1', name: 'John Doe' },
-    { id: '2', name: 'Jane Smith' },
-    { id: '3', name: 'Alice Johnson' },
-    { id: '4', name: 'Bob Brown' },
-  ]
+  const [profiles, setProfiles] = useState([]); // État pour stocker les utilisateurs
+
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      try {
+        const response = await fetch('http://16.171.155.129:3000/users');
+        const data = await response.json();
+        setProfiles(data);
+      } catch (error) {
+        console.error('Erreur lors de la récupération des utilisateurs:', error);
+      }
+    };
+
+    fetchProfiles();
+  }, []);
+
+  const getRandomStyle = () => {
+    return Math.random() < 0.5 ? styles.profile : styles.profile_no_msg;
+  };
 
   return (
     <ScreenWrapper bg={theme.colors.whiteorange}>
       <View style={styles.container}>
         <View style={styles.header}>
-        <BackButton onPress={() => router.push('/home')} />
-        <Text style={styles.title}>Messages</Text>
+          <BackButton onPress={() => router.push('/home')} />
+          <Text style={styles.title}>Messages</Text>
         </View>
 
         <TextInput style={styles.searchBar} placeholder="Rechercher..." />
 
         <FlatList
           data={profiles}
-          keyExtractor={item => item.id}
-          renderItem={({ item }) => <Text style={styles.profile}>{item.name}</Text>}
+          keyExtractor={(item, index) => `${item.username}-${index}`}
+          renderItem={({ item }) => (
+            <View style={styles.profileContainer}>
+              {item.photo_profil && (
+                <Image
+                  source={{ uri: `http://16.171.155.129:3000/media/id/${item.photo_profil}` }}
+                  style={styles.profileImage}
+                />
+              )}
+              <Text style={getRandomStyle()}>{item.username}</Text>
+            </View>
+          )}
           contentContainerStyle={styles.list}
         />
 
@@ -69,11 +91,29 @@ const styles = StyleSheet.create({
   list: {
     paddingBottom: 80, // To ensure the list doesn't overlap with the footer
   },
-  profile: {
+  profileContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.gray,
-    color: theme.colors.text,
+  },
+  profile: {
+    color: theme.colors.orange,
+    fontSize: 16,
+    fontWeight: theme.fonts.bold,
+    marginLeft: 8,
+  },
+  profile_no_msg: {
+    color: theme.colors.blueDark,
+    fontSize: 16,
+    fontWeight: theme.fonts.bold,
+    marginLeft: 8,
+  },
+  profileImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
 })
 
