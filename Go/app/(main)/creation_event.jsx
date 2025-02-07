@@ -1,14 +1,19 @@
-import { StyleSheet, Text, View, TextInput, Button, ScrollView, Image, TouchableOpacity, Alert } from 'react-native'
+import { StyleSheet, Text, View, TextInput, ScrollView, Image, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
 import * as ImagePicker from 'expo-image-picker'
 import * as SecureStore from 'expo-secure-store';
+import { useRouter } from 'expo-router';
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import { theme } from '../../constants/theme'
+import BackButton from '../../components/BackButton' // Import BackButton
+import Button from '../../components/Button' // Import custom Button
 
 const defaultProfileImage = require('../../assets/images/image par defaut.png');
 
 const creation_event = () => {
+  const router = useRouter();
+  
   const [name, setName] = useState('')
   const [date, setDate] = useState('')
   const [location, setLocation] = useState('')
@@ -92,45 +97,50 @@ const creation_event = () => {
     <View style={styles.wrapper}>
       <Header />
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.form}>
-          <Text style={styles.label}>Event Name</Text>
-          <TextInput style={styles.input} value={name} onChangeText={setName} />
-
-          <Text style={styles.label}>Sport</Text>
-          <TextInput style={styles.input} value={sport} onChangeText={setSport} />
-
-          <TouchableOpacity style={styles.square} onPress={pickImage}>
-            {selectedImage ? (
-            <Image source={{ uri: selectedImage.uri }} style={styles.profileImage} />
-            ) : (
-            <Image source={defaultProfileImage} style={styles.profileImage} />
-            )}
-          </TouchableOpacity>
-
-          
-          <Text style={styles.label}>Description</Text>
-          <TextInput style={styles.input} value={description} onChangeText={setDescription} multiline />
-
-          <View style={styles.row}>
-            <View style={styles.halfInputContainer}>
-              <Text style={styles.label}>Gender</Text>
-              <TextInput style={styles.input} value={gender} onChangeText={setGender} />
-            </View>
-            <View style={styles.halfInputContainer}>
-              <Text style={styles.label}>Location</Text>
-              <TextInput style={styles.input} value={location} onChangeText={setLocation} />
-            </View>
+        <View style={styles.headerRow}>
+          <BackButton onPress={() => router.push('/events')} />
+        <View style={styles.headerTextContainer}>
+            <Text style={styles.headerText}>Créer mon évènement</Text>
           </View>
+        </View>
+        <View style={styles.formWrapper}>
+          <View style={styles.form}>
+            <Text style={styles.label}>Nom de l'évènement</Text>
+            <TextInput style={styles.input} value={name} onChangeText={setName} />
 
-          <Text style={styles.label}>Max Participants</Text>
-          <TextInput style={styles.input} value={maxParticipants} onChangeText={setMaxParticipants} keyboardType="numeric" />
+            <Text style={styles.label}>Sport</Text>
+            <TextInput style={styles.input} value={sport} onChangeText={setSport} />
 
-          <Text style={styles.label}>Date</Text>
-          <TextInput style={styles.input} value={date} onChangeText={setDate} />
+            <TouchableOpacity style={styles.square} onPress={pickImage}>
+              {selectedImage ? (
+                <Image source={{ uri: selectedImage.uri }} style={styles.profileImage} />
+              ) : (
+                <Image source={defaultProfileImage} style={styles.profileImage} />
+              )}
+            </TouchableOpacity>
 
+            <Text style={styles.label}>Description</Text>
+            <TextInput style={styles.input} value={description} onChangeText={setDescription} multiline />
 
+            <View style={styles.row}>
+              <View style={styles.halfInputContainer}>
+                <Text style={styles.label}>Genre</Text>
+                <TextInput style={styles.input} value={gender} onChangeText={setGender} />
+              </View>
+              <View style={styles.halfInputContainer}>
+                <Text style={styles.label}>Lieu</Text>
+                <TextInput style={styles.input} value={location} onChangeText={setLocation} />
+              </View>
+            </View>
 
-          <Button title="Create Event" onPress={handleSubmit} color={theme.colors.orange} />
+            <Text style={styles.label}>Nombre max de participants</Text>
+            <TextInput style={styles.input} value={maxParticipants} onChangeText={setMaxParticipants} keyboardType="numeric" />
+
+            <Text style={styles.label}>Date</Text>
+            <TextInput style={styles.input} value={date} onChangeText={setDate} />
+
+            <Button textStyle={styles.button}title="Créer évènement" onPress={handleSubmit} />
+          </View>
         </View>
       </ScrollView>
       <Footer />
@@ -149,6 +159,28 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 100, // Ensure content is not hidden behind the footer
     alignItems: 'center', // Center the content horizontally
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  headerTextContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  headerText: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: theme.colors.orange,
+  },
+  formWrapper: {
+    borderWidth: 1,
+    borderColor: theme.colors.gray,
+    borderRadius: theme.radius.sm,
+    padding: 10,
+    width: '100%',
+    alignItems: 'center',
   },
   form: {
     width: '100%',
@@ -201,5 +233,8 @@ const styles = StyleSheet.create({
   },
   halfInputContainer: {
     width: '48%',
-  },    
-})
+  },
+  button: {
+    paddingHorizontal: 16,
+  },
+});
