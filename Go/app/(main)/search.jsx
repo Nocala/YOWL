@@ -19,25 +19,25 @@ const search = () => {
           <SearchIcon strokeWidth={1.5} color={theme.colors.textDark} />
           <TextInput style={styles.searchBar} placeholder="Search..." />
         </View>
-        
+
         <View style={styles.buttonContainer}>
-          <Button 
-            title="Comptes" 
-            onPress={() => {}} 
-            buttonStyle={styles.filterButton} 
-            textStyle={styles.filterButtonText} 
+          <Button
+            title="Comptes"
+            onPress={() => { }}
+            buttonStyle={styles.filterButton}
+            textStyle={styles.filterButtonText}
           />
-          <Button 
-            title="Events" 
-            onPress={() => {}} 
-            buttonStyle={styles.filterButton} 
-            textStyle={styles.filterButtonText} 
+          <Button
+            title="Events"
+            onPress={() => { }}
+            buttonStyle={styles.filterButton}
+            textStyle={styles.filterButtonText}
           />
-          <Button 
-            title="Articles" 
-            onPress={() => {}} 
-            buttonStyle={styles.filterButton} 
-            textStyle={styles.filterButtonText} 
+          <Button
+            title="Articles"
+            onPress={() => { }}
+            buttonStyle={styles.filterButton}
+            textStyle={styles.filterButtonText}
           />
         </View>
       </ScrollView>
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   title: {
-    alignSelf: 'flex-start', 
+    alignSelf: 'flex-start',
     fontSize: 24,
     fontWeight: theme.fonts.bold,
     color: theme.colors.orange,
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.whiteorange,
     borderColor: theme.colors.orange,
     borderWidth: 1,
-    height: 36, // Reduced height
+    height: 36,
 
   },
   filterButtonText: {

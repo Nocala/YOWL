@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View, TextInput, FlatList, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'expo-router'
+import { theme } from '../../constants/theme'
 import BackButton from '../../components/BackButton'
 import Footer from '../../components/Footer'
-import { theme } from '../../constants/theme'
 import ScreenWrapper from '../../components/SreenWrapper'
-import { useRouter } from 'expo-router'; // Assurez-vous d'importer depuis 'expo-router'
 
 const messages = () => {
-  const router = useRouter(); // Utilisez useRouter pour obtenir l'objet router
-  const [profiles, setProfiles] = useState([]); // État pour stocker les utilisateurs
+  const router = useRouter();
+  const [profiles, setProfiles] = useState([]);
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     margin: 16,
   },
   list: {
-    paddingBottom: 80, // To ensure the list doesn't overlap with the footer
+    paddingBottom: 80,
   },
   profileContainer: {
     flexDirection: 'row',

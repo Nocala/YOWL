@@ -1,15 +1,16 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, TouchableWithoutFeedback, Keyboard, Image, Alert,} from 'react-native';
-import React, { useState, useEffect } from 'react';
-import ScreenWrapper from '../../components/SreenWrapper';
-import BackButton from '../../components/BackButton';
-import { useRouter } from 'expo-router';
-import { theme } from '../../constants/theme';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import Button from '../../components/Button';
-import { wp } from '../../helpers/common';
-import * as SecureStore from 'expo-secure-store';
-import * as ImagePicker from 'expo-image-picker';
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, ScrollView, TouchableWithoutFeedback, Keyboard, Image, Alert, } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import * as SecureStore from 'expo-secure-store'
+import * as ImagePicker from 'expo-image-picker'
+import { useRouter } from 'expo-router'
+import { wp } from '../../helpers/common'
+import { theme } from '../../constants/theme'
+import ScreenWrapper from '../../components/SreenWrapper'
+import BackButton from '../../components/BackButton'
+import Header from '../../components/Header'
+import Footer from '../../components/Footer'
+import Button from '../../components/Button'
+
 
 const CreationPost = () => {
   const router = useRouter();
@@ -122,7 +123,7 @@ const CreationPost = () => {
             <BackButton onPress={() => router.push('/home')} />
 
             <View style={styles.headerTextContainer}>
-                <Text style={styles.headerText}>Créer un post</Text>
+              <Text style={styles.headerText}>Créer un post</Text>
             </View>
           </View>
 
@@ -168,10 +169,10 @@ const CreationPost = () => {
                           placeholder="Description de votre post ici ..."
                           value={postDescription}
                           onChangeText={setPostDescription}
-                          multiline/>
+                          multiline />
                       </ScrollView>
                     </View>
-                    
+
                     <Button title="Post" buttonStyle={{ paddingLeft: wp(10), paddingRight: wp(10) }} onPress={handleSubmitTextPost} />
                   </View>
                 </ScrollView>
@@ -182,13 +183,13 @@ const CreationPost = () => {
                   <View style={styles.contentButton2}>
                     <View style={styles.inputImage}>
                       <ScrollView>
-                          <TouchableOpacity style={styles.circle} onPress={pickImage}>
-                              {selectedImage ? (
-                                  <Image source={{ uri: selectedImage.uri }} style={styles.profileImage} />
-                              ) : (
-                                  <Image source={require('../../assets/images/image par defaut.png')} style={styles.imagedefaut}/>
-                              )}
-                          </TouchableOpacity>
+                        <TouchableOpacity style={styles.circle} onPress={pickImage}>
+                          {selectedImage ? (
+                            <Image source={{ uri: selectedImage.uri }} style={styles.profileImage} />
+                          ) : (
+                            <Image source={require('../../assets/images/image par defaut.png')} style={styles.imagedefaut} />
+                          )}
+                        </TouchableOpacity>
                       </ScrollView>
                     </View>
 
@@ -199,7 +200,7 @@ const CreationPost = () => {
                           placeholder="Description de votre post ici ..."
                           value={postDescription}
                           onChangeText={setPostDescription}
-                          multiline/>
+                          multiline />
                       </ScrollView>
                     </View>
 
@@ -209,7 +210,7 @@ const CreationPost = () => {
               )}
 
             </View>
-          </View>          
+          </View>
           <Footer />
         </ScreenWrapper>
       </View>
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: theme.radius.xxl,
     borderWidth: 1,
-    borderColor: theme.colors.blueDark ,
+    borderColor: theme.colors.blueDark,
     alignItems: 'center',
   },
   inputpost: {
@@ -256,7 +257,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: theme.radius.xxl,
     borderWidth: 1,
-    borderColor: theme.colors.blueDark ,
+    borderColor: theme.colors.blueDark,
     alignItems: 'center',
   },
   container: {
@@ -270,7 +271,7 @@ const styles = StyleSheet.create({
   button: {
     padding: 10,
     margin: 10,
-    width: '40%',    
+    width: '40%',
     backgroundColor: theme.colors.whiteorange,
     borderColor: theme.colors.gray,
     borderWidth: 1,
@@ -301,11 +302,11 @@ const styles = StyleSheet.create({
     color: theme.colors.blueDark,
   },
   input: {
-    height: 75, 
+    height: 75,
     padding: 10,
   },
   inputdescription: {
-    height: 200, 
+    height: 200,
     padding: 10,
   },
   circle: {
@@ -322,12 +323,12 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     borderRadius: theme.radius.xl,
-    },
+  },
   inputImage: {
     width: "100%",
-    alignItems:"center"
+    alignItems: "center"
   },
-  imagedefaut:{
+  imagedefaut: {
     borderColor: theme.colors.gray,
     borderWidth: 1,
     borderRadius: theme.radius.xl,

@@ -9,7 +9,6 @@ import SearchIcon from '../../assets/icons/Search'
 import Icon from '../../assets/icons/Index'
 import BackButton from '../../components/BackButton'
 
-
 const parametre = ({ size = 40 }) => {
     const router = useRouter();
     return (
@@ -67,7 +66,7 @@ const parametre = ({ size = 40 }) => {
                     </View>
                 </View>
             </ScrollView>
-            
+
             <Footer />
         </ScreenWrapper>
     )
@@ -81,11 +80,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginVertical: 10,
     },
-        headerTextContainer: {
+    headerTextContainer: {
         flex: 1,
         alignItems: 'left',
     },
-        headerText: {
+    headerText: {
         fontSize: 25,
         fontWeight: 'bold',
         color: theme.colors.orange,

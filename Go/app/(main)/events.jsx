@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, } from 'react-native';
-import { useRouter } from "expo-router";
-
-import { theme } from '../../constants/theme';
-import Event from '../../components/Event';
-import ScreenWrapper from '../../components/SreenWrapper';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
-import Plus from '../../assets/icons/Plus';
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image, } from 'react-native'
+import { useRouter } from "expo-router"
+import { theme } from '../../constants/theme'
+import Event from '../../components/Event'
+import ScreenWrapper from '../../components/SreenWrapper'
+import Header from '../../components/Header'
+import Footer from '../../components/Footer'
+import Plus from '../../assets/icons/Plus'
 
 
 const EventsPage = () => {
@@ -61,14 +60,14 @@ const EventsPage = () => {
                 nb_participants_max={event.nb_participants_max}
                 description={event.description}
                 id_media={event.id_media}
-                eventId={event.id_event} 
+                eventId={event.id_event}
               />
             ))
           )}
         </ScrollView>
 
         <TouchableOpacity style={[styles.fab, { bottom: 80 }]} onPress={() => router.push('/creation_event')}>
-          <Plus strokeWidth={2} color={theme.colors.orange}/>
+          <Plus strokeWidth={2} color={theme.colors.orange} />
         </TouchableOpacity>
 
         <Footer />
@@ -119,8 +118,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 5,
-    borderWidth: 2, // Add border width
-    borderColor: theme.colors.orange, // Add border color
+    borderWidth: 2,
+    borderColor: theme.colors.orange,
   },
 });
 

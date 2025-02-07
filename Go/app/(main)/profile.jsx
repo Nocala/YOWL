@@ -1,12 +1,12 @@
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { useRouter } from 'expo-router'
 import * as SecureStore from 'expo-secure-store';
 import { theme } from '../../constants/theme'
 import ScreenWrapper from '../../components/SreenWrapper'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import Icon from '../../assets/icons/Index'
-import { useRouter } from 'expo-router'
 
 const profile = ({ size = 30 }) => {
   const [userData, setUserData] = useState(null);
@@ -15,15 +15,11 @@ const profile = ({ size = 30 }) => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      console.log('Fetching user data...');
       const token = await SecureStore.getItemAsync("authToken");
       if (!token) {
         Alert.alert('Attention !', 'Tu n\'es pas connecté 🚫');
-        console.log('No token found');
         return;
       }
-
-      console.log('Token found:', token);
 
       try {
         const response = await fetch('http://16.171.155.129:3000/profil', {
@@ -33,16 +29,11 @@ const profile = ({ size = 30 }) => {
           }
         });
 
-        console.log('Response status:', response.status);
-
         const data = await response.json();
-        console.log('Response data:', data);
 
         if (response.ok) {
           setUserData(data);
-          console.log('User data set:', data);
 
-          // Set profile image URI directly using the image ID
           if (data.photo_profil) {
             const imageUri = `http://16.171.155.129:3000/media/id/${data.photo_profil}`;
             setProfileImageUri(imageUri);
@@ -52,11 +43,9 @@ const profile = ({ size = 30 }) => {
           }
         } else {
           Alert.alert('Oula...', data.error || 'Impossible de récupérer les informations de l\'utilisateur 😔');
-          console.log('Error fetching user data:', data.error);
         }
       } catch (error) {
         Alert.alert('Oula...', 'Une erreur est survenue lors de la récupération des informations de l\'utilisateur 😔');
-        console.log('Fetch error:', error);
       }
     };
 
@@ -64,7 +53,7 @@ const profile = ({ size = 30 }) => {
   }, []);
 
   if (!userData) {
-    return null; // Ou un indicateur de chargement
+    return null;
   }
 
   return (
@@ -115,8 +104,8 @@ const profile = ({ size = 30 }) => {
               </TouchableOpacity>
             </View>
           </View>
+          
           <ScrollView>
-            {/* Ici, vous pouvez ajouter le code pour afficher les posts de l'utilisateur */}
             <Text>Posts de l'utilisateur</Text>
           </ScrollView>
         </View>

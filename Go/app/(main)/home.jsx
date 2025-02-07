@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import Post_txt from '../../components/Post_txt';
-import Post_media from '../../components/Post_media';
-import ScreenWrapper from '../../components/SreenWrapper';
-import Footer from '../../components/Footer';
-import Header from '../../components/Header';
-import { theme } from '../../constants/theme';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { theme } from '../../constants/theme'
+import Post_txt from '../../components/Post_txt'
+import Post_media from '../../components/Post_media'
+import ScreenWrapper from '../../components/SreenWrapper'
+import Footer from '../../components/Footer'
+import Header from '../../components/Header'
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -59,15 +59,16 @@ const Home = () => {
   return (
     <ScreenWrapper bg={theme.colors.whiteorange}>
       <Header />
+      
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <Text style={styles.headerText}>Pour toi</Text>
 
-        {mergedPosts.map((post, index) => 
+        {mergedPosts.map((post, index) =>
           post.post_txt_id ? (
-            <Post_txt 
-              key={`txt-${post.post_txt_id}`} 
+            <Post_txt
+              key={`txt-${post.post_txt_id}`}
               title={post.text}
-              description={post.description} 
+              description={post.description}
               username={post.username}
             />
           ) : (
@@ -80,6 +81,7 @@ const Home = () => {
           )
         )}
       </ScrollView>
+
       <Footer />
     </ScreenWrapper>
   );

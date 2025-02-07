@@ -1,20 +1,20 @@
 import { StyleSheet, Text, View, TextInput, ScrollView, Image, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
 import * as ImagePicker from 'expo-image-picker'
-import * as SecureStore from 'expo-secure-store';
-import { useRouter } from 'expo-router';
+import * as SecureStore from 'expo-secure-store'
+import { useRouter } from 'expo-router'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import { theme } from '../../constants/theme'
-import BackButton from '../../components/BackButton' 
-import Button from '../../components/Button' 
-import ScreenWrapper from '../../components/SreenWrapper' 
+import BackButton from '../../components/BackButton'
+import Button from '../../components/Button'
+import ScreenWrapper from '../../components/SreenWrapper'
 
 const defaultProfileImage = require('../../assets/images/image par defaut.png');
 
 const creation_event = () => {
   const router = useRouter();
-  
+
   const [name, setName] = useState('')
   const [date, setDate] = useState('')
   const [location, setLocation] = useState('')
@@ -22,7 +22,7 @@ const creation_event = () => {
   const [gender, setGender] = useState('')
   const [maxParticipants, setMaxParticipants] = useState('')
   const [description, setDescription] = useState('')
-  const [selectedImage, setSelectedImage] = useState(null); // Image sélectionnée
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -103,13 +103,13 @@ const creation_event = () => {
           <BackButton onPress={() => router.push('/events')} />
 
           <View style={styles.headerTextContainer}>
-              <Text style={styles.headerText}>Créer mon évènement</Text>
+            <Text style={styles.headerText}>Créer mon évènement</Text>
           </View>
         </View>
 
         <View style={styles.formWrapper}>
           <View style={styles.form}>
-            
+
             <Text style={styles.label}>Nom de l'évènement</Text>
             <TextInput style={styles.input} value={name} onChangeText={setName} />
 
@@ -145,7 +145,7 @@ const creation_event = () => {
             <Text style={styles.label}>Date</Text>
             <TextInput style={styles.input} value={date} onChangeText={setDate} placeholder='Au format AAAA/MM/JJ' />
 
-            <Button textStyle={styles.button}title="Créer évènement" onPress={handleSubmit} />
+            <Button textStyle={styles.button} title="Créer évènement" onPress={handleSubmit} />
           </View>
         </View>
       </ScrollView>
@@ -163,8 +163,8 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 20,
-    paddingBottom: 100, // Ensure content is not hidden behind the footer
-    alignItems: 'center', // Center the content horizontally
+    paddingBottom: 100,
+    alignItems: 'center',
   },
   headerRow: {
     flexDirection: 'row',
@@ -190,15 +190,15 @@ const styles = StyleSheet.create({
   },
   form: {
     width: '100%',
-    maxWidth: 400, // Limit the width of the form
-    alignItems: 'center', // Center the form elements
+    maxWidth: 400,
+    alignItems: 'center',
   },
   label: {
     marginTop: 10,
     fontSize: 16,
     color: theme.colors.textDark,
     fontWeight: theme.fonts.semibold,
-    alignSelf: 'flex-start', // Align labels to the start of the form
+    alignSelf: 'flex-start',
   },
   input: {
     borderWidth: 1,
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: theme.radius.sm,
     backgroundColor: theme.colors.whiteorange,
-    width: '100%', // Make inputs take full width of the form
+    width: '100%',
   },
   square: {
     marginTop: 15,

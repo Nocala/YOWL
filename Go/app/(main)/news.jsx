@@ -1,10 +1,10 @@
-import React, {useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StyleSheet, ScrollView, View, Text } from 'react-native'
-import ScreenWrapper from '../../components/SreenWrapper';
+import { theme } from '../../constants/theme'
+import ScreenWrapper from '../../components/SreenWrapper'
 import Article from '../../components/Article'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
-import { theme } from '../../constants/theme'
 
 const News = () => {
   const [articles, setArticles] = useState([])
@@ -29,21 +29,21 @@ const News = () => {
         <Header />
         <ScrollView style={styles.scrollView}>
 
-        <Text style={styles.titleText}>News</Text>
+          <Text style={styles.titleText}>News</Text>
 
-        {articles.map(article => (
-          <Article
-            key={article.id_article}
-            id_article={article.id_article}
-            title={article.titre}
-            description={article.description}
-            body={article.corps}
-            sport={article.sport}
-            date={article.date}
-            id_media={article.id_media}
-            author={article.auteur}
-          />
-        ))}
+          {articles.map(article => (
+            <Article
+              key={article.id_article}
+              id_article={article.id_article}
+              title={article.titre}
+              description={article.description}
+              body={article.corps}
+              sport={article.sport}
+              date={article.date}
+              id_media={article.id_media}
+              author={article.auteur}
+            />
+          ))}
         </ScrollView>
         <Footer />
       </View>
