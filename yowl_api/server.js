@@ -131,6 +131,17 @@ app.post('/login', (req, res) => {
 });
 
 
+//Route pour récupérer username & pdp (messages)
+app.get('/users', (req, res) => {
+  db.query('SELECT username, photo_profil FROM PROFIL', (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: 'Erreur lors de la récupération des utilisateurs' });
+    }
+    res.json(results);
+  });
+});
+
+
 //------------------------------------------
 // Route pour uploader une image ou vidéo
 app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
@@ -168,9 +179,11 @@ app.post('/upload', verifyToken, upload.single('file'), (req, res) => {
   });
 });
 
+
+
 //------------------------------------------
 // Route pour récupérer les médias d'un utilisateur
-app.get('/media/user/:user_id', (req, res) => {
+app.get('/media/user/:user_id', verifyToken, (req, res) => {
   const { user_id } = req.params;
 
   console.log('Requête pour récupérer les médias de l\'utilisateur avec user_id:', user_id);
