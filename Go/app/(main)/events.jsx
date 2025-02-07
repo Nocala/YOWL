@@ -43,6 +43,9 @@ const EventsPage = () => {
       <View style={styles.container}>
         <Header />
         <ScrollView contentContainerStyle={styles.scrollView}>
+
+          <Text style={styles.titleText}>Évènements</Text>
+
           {error ? (
             <Text style={styles.errorText}>Error: {error.message}</Text>
           ) : (
@@ -88,6 +91,13 @@ const styles = StyleSheet.create({
   scrollView: {
     padding: 10,
     paddingBottom: 80,
+  },
+  titleText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: theme.colors.orange,
+    marginVertical: 10,
+    paddingLeft: 10,
   },
   errorText: {
     color: theme.colors.rose,

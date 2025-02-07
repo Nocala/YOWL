@@ -14,10 +14,12 @@ const search = () => {
       <Header />
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Rechercher</Text>
+
         <View style={styles.searchContainer}>
           <SearchIcon strokeWidth={1.5} color={theme.colors.textDark} />
           <TextInput style={styles.searchBar} placeholder="Search..." />
         </View>
+        
         <View style={styles.buttonContainer}>
           <Button 
             title="Comptes" 
