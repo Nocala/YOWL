@@ -1,67 +1,100 @@
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
+import { useRouter } from 'expo-router'
+import { theme } from '../../constants/theme'
 import ScreenWrapper from '../../components/SreenWrapper'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import SearchIcon from '../../assets/icons/Search'
-import { theme } from '../../constants/theme'
 import Icon from '../../assets/icons/Index'
-import { useRouter } from 'expo-router'
+import BackButton from '../../components/BackButton'
 
-const parametre = ({size=40}) => {
+
+const parametre = ({ size = 40 }) => {
     const router = useRouter();
-  return (
-    <ScreenWrapper bg={theme.colors.whiteorange}>
-        <Header />
-      <ScrollView>
-            <View style={styles.searchContainer}>
-                <SearchIcon strokeWidth={1.5} color={theme.colors.textDark} />
-                <TextInput style={styles.searchBar} placeholder="Search..." />
-            </View>
-            <View>
-                <View style={styles.containerparametre}>
-                    <Text style={styles.textparametre}>Archives</Text>
-                    <Icon name="arrowright" size={size} style={styles.icon}/>
+    return (
+        <ScreenWrapper bg={theme.colors.whiteorange}>
+            <Header />
+
+            <ScrollView>
+                <View style={styles.headerRow}>
+                    <BackButton onPress={() => router.push('/profile')} />
+
+                    <View style={styles.headerTextContainer}>
+                        <Text style={styles.headerText}>Paramètres</Text>
+                    </View>
                 </View>
-                <View style={styles.containerparametre}>
-                    <Text style={styles.textparametre}>Notifications</Text>
-                    <Icon name="arrowright" size={size} style={styles.icon}/>
+
+                <View style={styles.searchContainer}>
+                    <SearchIcon strokeWidth={1.5} color={theme.colors.textDark} />
+                    <TextInput style={styles.searchBar} placeholder="Search..." />
                 </View>
-                <View style={styles.containerparametre}>
-                    <Text style={styles.textparametre}>Type de compte</Text>
-                    <Icon name="arrowright" size={size} style={styles.icon}/>
+
+                <View>
+                    <View style={styles.containerparametre}>
+                        <Text style={styles.textparametre}>Archives</Text>
+                        <Icon name="arrowright" size={size} style={styles.icon} />
+                    </View>
+
+                    <View style={styles.containerparametre}>
+                        <Text style={styles.textparametre}>Notifications</Text>
+                        <Icon name="arrowright" size={size} style={styles.icon} />
+                    </View>
+
+                    <View style={styles.containerparametre}>
+                        <Text style={styles.textparametre}>Type de compte</Text>
+                        <Icon name="arrowright" size={size} style={styles.icon} />
+                    </View>
+
+                    <View style={styles.containerparametre}>
+                        <Text style={styles.textparametre}>Autorisations</Text>
+                        <Icon name="arrowright" size={size} style={styles.icon} />
+                    </View>
+
+                    <TouchableOpacity style={styles.containerparametre} onPress={() => router.push('confidentialite')}>
+                        <Text style={styles.textparametre}>Confidentialité</Text>
+                        <Icon name="arrowright" size={size} style={styles.icon} />
+                    </TouchableOpacity>
+
+                    <View style={styles.containerparametre}>
+                        <Text style={styles.textparametre}>Se déconnecter</Text>
+                        <Icon name="arrowright" size={size} style={styles.icon} />
+                    </View>
+
+                    <View style={styles.containerparametre}>
+                        <Text style={styles.textparametre}>Supprimer compte</Text>
+                        <Icon name="arrowright" size={size} style={styles.icon} />
+                    </View>
                 </View>
-                <View style={styles.containerparametre}>
-                    <Text style={styles.textparametre}>Autorisations</Text>
-                    <Icon name="arrowright" size={size} style={styles.icon}/>
-                </View>
-                <TouchableOpacity style={styles.containerparametre} onPress={() => router.push('confidentialite')}>
-                    <Text style={styles.textparametre}>Confidentialité</Text>
-                    <Icon name="arrowright" size={size} style={styles.icon}/>
-                </TouchableOpacity>
-                <View style={styles.containerparametre}>
-                    <Text style={styles.textparametre}>Se déconnecter</Text>
-                    <Icon name="arrowright" size={size} style={styles.icon}/>
-                </View>
-                <View style={styles.containerparametre}>
-                    <Text style={styles.textparametre}>Supprimer compte</Text>
-                    <Icon name="arrowright" size={size} style={styles.icon}/>
-                </View>
-            </View>
-      </ScrollView>
-      <Footer />
-    </ScreenWrapper>
-  )
+            </ScrollView>
+            
+            <Footer />
+        </ScreenWrapper>
+    )
 }
 
 export default parametre
 
 const styles = StyleSheet.create({
+    headerRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 10,
+    },
+        headerTextContainer: {
+        flex: 1,
+        alignItems: 'left',
+    },
+        headerText: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        color: theme.colors.orange,
+    },
     searchBar: {
         flex: 1,
         height: 40,
-        paddingHorizontal: 8,
-      },
+        paddingBottom: 8,
+    },
     searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -77,12 +110,12 @@ const styles = StyleSheet.create({
     },
     containerparametre: {
         flexDirection: 'row',
-        padding: 20,
+        padding: 15,
         alignItems: 'center',
         justifyContent: 'space-between'
     },
-    textparametre:{
-        fontSize: 30,
+    textparametre: {
+        fontSize: 25,
         color: theme.colors.blueDark
     },
     icon: {

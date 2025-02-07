@@ -100,7 +100,6 @@ const creation_event = () => {
       <Header />
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerRow}>
-
           <BackButton onPress={() => router.push('/events')} />
 
           <View style={styles.headerTextContainer}>
