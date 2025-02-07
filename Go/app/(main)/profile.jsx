@@ -42,19 +42,11 @@ const profile = ({ size = 30 }) => {
           setUserData(data);
           console.log('User data set:', data);
 
-          // Fetch profile image
+          // Set profile image URI directly using the image ID
           if (data.photo_profil) {
-            console.log('Fetching profile image with ID:', data.photo_profil);
-            const imageResponse = await fetch(`http://16.171.155.129:3000/media/id/${data.photo_profil}`);
-            const imageData = await imageResponse.json();
-            console.log('Image data:', imageData);
-
-            if (imageResponse.ok) {
-              setProfileImageUri(imageData.filepath);
-              console.log('Profile image URI set:', imageData.filepath);
-            } else {
-              console.log('Error fetching profile image:', imageData.error);
-            }
+            const imageUri = `http://16.171.155.129:3000/media/id/${data.photo_profil}`;
+            setProfileImageUri(imageUri);
+            console.log('Profile image URI set:', imageUri);
           } else {
             console.log('No profile image ID found in user data');
           }
@@ -100,7 +92,7 @@ const profile = ({ size = 30 }) => {
               </View>
 
               {profileImageUri ? (
-                <Image source={{ uri: `http://16.171.155.129:3000${profileImageUri}` }} style={styles.profileImage} />
+                <Image source={{ uri: profileImageUri }} style={styles.profileImage} />
               ) : (
                 <Text style={styles.noImageText}>Pas d'image de profil</Text>
               )}
