@@ -85,7 +85,7 @@ const profile = ({ size = 30 }) => {
                   </View>
 
                   <View style={styles.followers}>
-                    <Text style={styles.nombrefollowers}>{userData.nb_abonnes}</Text>
+                    <Text style={styles.nombrefollowers}>{userData.nb_abonnes !== undefined ? userData.nb_abonnes : '0'}</Text>
                     <Text style={styles.textnormal}>Abonnés</Text>
                   </View>
                 </View>
