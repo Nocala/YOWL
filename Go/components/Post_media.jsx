@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { theme } from '../constants/theme';
 
-const PostMedia = ({ description, username, likes, id_media }) => {
+const Post_media = ({ description, username, likes, id_media }) => {
   const [imageUrl, setImageUrl] = useState(null);
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
 
@@ -27,13 +27,13 @@ const PostMedia = ({ description, username, likes, id_media }) => {
         />
       )}
       <Text style={styles.description}>{description}</Text>
-      <Text style={styles.username}>{username}</Text>
+      <Text style={styles.username}>@{username}</Text>
       {/*<Text style={styles.likes}>{likes} likes</Text>*/}
     </View>
   );
 };
 
-export default PostMedia;
+export default Post_media;
 
 const styles = StyleSheet.create({
   container: {
@@ -53,15 +53,16 @@ const styles = StyleSheet.create({
     borderRadius: theme.radius.sm,
   },
   description: {
-    fontSize: 14,
-    marginBottom: 0,
-    marginTop: 15,
+    fontSize: 15,
+    color: theme.colors.blueDark,
+    marginBottom: 5,
+    marginTop: 10,
   },
   username: {
-    fontSize: 15,
-    fontWeight: 'semibold',
+    fontSize: 12,
     marginBottom: 5,
     color: theme.colors.blueDark,
+    fontStyle: 'italic',
   },
   //likes: {
     //fontSize: 12,
