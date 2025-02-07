@@ -1,13 +1,5 @@
 import { 
-  Image, 
-  ImageBackground, 
-  PixelRatio, 
-  ScrollView, 
-  StyleSheet, 
-  Text, 
-  TouchableOpacity, 
-  View 
-} from 'react-native';
+  Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
@@ -75,7 +67,7 @@ const creation_profil_1 = ({ size = 60 }) => {
       if (['image/jpeg', 'image/png'].includes(file.mimeType)) {
         setSelectedImage(file);
       } else {
-        alert("Seuls les formats JPEG et PNG sont autorisés.");
+        Alert.alert("Hop hop hop !", "Seuls les formats JPEG et PNG sont autorisés ⚠️");
       }
     }
   };
@@ -89,7 +81,7 @@ const creation_profil_1 = ({ size = 60 }) => {
     const sportsArray = Object.keys(selectedSports).filter((id) => selectedSports[id]);
 
     if (sportsArray.length === 0) {
-      alert("Veuillez sélectionner au moins un sport.");
+      Alert.alert("Attention !", "Tu dois sélectionner au moins un sport pour continuer 🏀");
       return;
     }
 

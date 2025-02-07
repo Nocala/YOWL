@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ImageBackground, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, Image, TouchableOpacity, ScrollView, Alert } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import ScreenWrapper from '../components/SreenWrapper';
 import BackButton from '../components/BackButton';
@@ -57,7 +57,7 @@ const creation_profil_2 = ({}) => {
     const sportsArray = Object.keys(selectedSports).filter((id) => selectedSports[id]);
   
     if (sportsArray.length === 0) {
-      alert("Veuillez sélectionner au moins un sport.");
+      Alert.alert('Attention', "Choisis au moins un sport pour continuer 🏀");
       return;
     }
   
@@ -92,6 +92,7 @@ const creation_profil_2 = ({}) => {
       console.log("Réponse de l'API:", data);
   
       if (response.ok) {
+        Alert.alert('Ca y est', "Ton profil a été créé avec succès 🎉");
         router.push('home');
       } else {
         alert(data.error || "Erreur lors de la mise à jour du profil.");

@@ -117,12 +117,6 @@ const Event = ({ name, date, lieu, sport, genre, description, id_media, eventId,
             handleParticipation();
           }} 
         />
-        <Button 
-          title="Inviter un ami" 
-          buttonStyle={styles.inviteButton} 
-          textStyle={[styles.inviteButtonText, styles.buttonText]} 
-          onPress={() => { /* action pour inviter un ami */ }}  
-        />
       </View>
     </View>
   );
@@ -184,14 +178,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     marginTop: 20,
-  },
-  inviteButton: {
-    backgroundColor: theme.colors.whiteorange,
-    borderColor: theme.colors.orange,
-    borderWidth: 1,  
-    height: 40,
   },
   partButton: {
     backgroundColor: theme.colors.orange,
