@@ -29,7 +29,7 @@ const SignUp = () => {
     const passwordRef = useRef(null);
     const confirmPasswordRef = useRef(null);
 
-    const scrollViewRef = useRef(null); // Référence du ScrollView
+    const scrollViewRef = useRef(null);
 
     const [keyboardVisible, setKeyboardVisible] = useState(false);
 
