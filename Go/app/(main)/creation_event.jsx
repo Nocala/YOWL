@@ -6,8 +6,9 @@ import { useRouter } from 'expo-router';
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import { theme } from '../../constants/theme'
-import BackButton from '../../components/BackButton' // Import BackButton
-import Button from '../../components/Button' // Import custom Button
+import BackButton from '../../components/BackButton' 
+import Button from '../../components/Button' 
+import ScreenWrapper from '../../components/SreenWrapper' 
 
 const defaultProfileImage = require('../../assets/images/image par defaut.png');
 
@@ -36,7 +37,7 @@ const creation_event = () => {
       if (['image/jpeg', 'image/png'].includes(file.mimeType)) {
         setSelectedImage(file);
       } else {
-        alert("Seuls les formats JPEG et PNG sont autorisés.");
+        alert("Hop hop hop ! Seuls les formats JPEG et PNG sont autorisés. ⚠️");
       }
     }
   };
@@ -47,13 +48,13 @@ const creation_event = () => {
 
   const handleSubmit = async () => {
     if (!validateFields()) {
-      Alert.alert('Error', 'All fields are required');
+      Alert.alert('Hop hop hop !', 'Remplis tous les champs pour créer un évènement ⌨️');
       return;
     }
 
     const token = await SecureStore.getItemAsync("authToken");
     if (!token) {
-      Alert.alert('Error', 'User not authenticated');
+      Alert.alert('Attention !', 'Tu n\'es pas connecté 🚫');
       return;
     }
 
@@ -84,17 +85,18 @@ const creation_event = () => {
       const data = await response.json();
 
       if (response.ok) {
-        Alert.alert('Success', 'Event created successfully');
+        Alert.alert('Et voilà !', 'Évènement créé avec succès 🎉');
+        router.push('/events');
       } else {
-        Alert.alert('Error', data.error || 'Failed to create event');
+        Alert.alert('Oula...', data.error || 'Tu n\'as pas réussi à créer un évènement 😔');
       }
     } catch (error) {
-      Alert.alert('Error', 'An error occurred while creating the event');
+      Alert.alert('Oula...', 'Une erreur est survenue lors de la création de l\'évènement 😔');
     }
   }
 
   return (
-    <View style={styles.wrapper}>
+    <ScreenWrapper bg={theme.colors.whiteorange}>
       <Header />
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerRow}>
@@ -127,6 +129,7 @@ const creation_event = () => {
                 <Text style={styles.label}>Genre</Text>
                 <TextInput style={styles.input} value={gender} onChangeText={setGender} />
               </View>
+
               <View style={styles.halfInputContainer}>
                 <Text style={styles.label}>Lieu</Text>
                 <TextInput style={styles.input} value={location} onChangeText={setLocation} />
@@ -137,14 +140,14 @@ const creation_event = () => {
             <TextInput style={styles.input} value={maxParticipants} onChangeText={setMaxParticipants} keyboardType="numeric" />
 
             <Text style={styles.label}>Date</Text>
-            <TextInput style={styles.input} value={date} onChangeText={setDate} />
+            <TextInput style={styles.input} value={date} onChangeText={setDate} placeholder='Au format AAAA/MM/JJ' />
 
             <Button textStyle={styles.button}title="Créer évènement" onPress={handleSubmit} />
           </View>
         </View>
       </ScrollView>
       <Footer />
-    </View>
+    </ScreenWrapper>
   )
 }
 
