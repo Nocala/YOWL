@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Post from '../../components/Post_txt';
+import PostMedia from '../../components/Post_media';
 import ScreenWrapper from '../../components/SreenWrapper';
 import Footer from '../../components/Footer';
 import Header from '../../components/Header';
@@ -8,6 +9,7 @@ import { theme } from '../../constants/theme';
 
 const Home = (size=24) => {
   const [posts, setPosts] = useState([]);
+  const [postsMedia, setPostsMedia] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -30,6 +32,13 @@ const Home = (size=24) => {
     fetchPosts();
   }, []);
 
+  useEffect(() => {
+    fetch('http://16.171.155.129:3000/posts-media')
+      .then(response => response.json())
+      .then(data => setPostsMedia(data.mediaPosts))
+      .catch(error => console.error('Error fetching posts media:', error));
+  }, []);
+
   return (
     <ScreenWrapper bg={theme.colors.whiteorange}>
       <Header />
@@ -41,7 +50,16 @@ const Home = (size=24) => {
             title={post.text}
             description={post.description} 
             username={post.username}
-            likes={post.likes}
+            //likes={post.likes}
+          />
+        ))}
+        {postsMedia.map(post => (
+          <PostMedia
+            key={post.post_media_id}
+            description={post.description}
+            username={post.username}
+            //likes={post.likes}
+            id_media={post.id_media}
           />
         ))}
       </ScrollView>

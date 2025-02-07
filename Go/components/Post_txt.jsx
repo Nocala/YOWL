@@ -12,10 +12,10 @@ const Post_txt = ({ title, description, username, likes }) => {
       </View>
       <View style={styles.informationpost}>
         <Text style={styles.username}>{username}</Text>
-        <View style={styles.likesContainer}>
+        {/*<View style={styles.likesContainer}>
           <Icon name="heart" size={20} color="red" />
           <Text style={styles.likes}>{likes}</Text>
-        </View>
+        </View>*/}
       </View>
     </View>
   );
@@ -52,14 +52,14 @@ const styles = StyleSheet.create({
     color: theme.colors.blueDark,
     marginBottom: 10,
   },
-  likesContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  likes: {
-    fontSize: 15,
-    marginLeft: 2.5,
-  },
+  //likesContainer: {
+    //flexDirection: 'row',
+    //alignItems: 'center',
+  //},
+  //likes: {
+    //fontSize: 15,
+    //marginLeft: 2.5,
+  //},
   informationpost:{
     flexDirection: 'row',
     flexWrap:'wrap',
