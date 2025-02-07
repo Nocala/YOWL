@@ -8,7 +8,6 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import Button from '../../components/Button';
 import { wp } from '../../helpers/common';
-import Icon from '../../assets/icons/Index';
 import * as SecureStore from 'expo-secure-store';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -117,18 +116,25 @@ const CreationPost = () => {
       <View style={{ flex: 1 }}>
         <ScreenWrapper bg={theme.colors.whiteorange}>
           <Header />
-          <BackButton router={router} />
+
+          <View style={styles.headerRow}>
+
+            <BackButton onPress={() => router.push('/home')} />
+
+            <View style={styles.headerTextContainer}>
+                <Text style={styles.headerText}>Créer un post</Text>
+            </View>
+          </View>
+
           <View style={styles.container}>
             <View style={styles.containerbutton}>
               <TouchableOpacity
-                style={[
-                  styles.button,
-                  selectedButton === 'button1' && styles.buttonSelected,
-                ]}
-                onPress={() => handlePress('button1')}
-              >
+                style={[styles.button, selectedButton === 'button1' && styles.buttonSelected]}
+                onPress={() => handlePress('button1')}>
+
                 <Text style={[styles.buttonText, selectedButton === 'button1' && styles.textSelected]}>Text</Text>
               </TouchableOpacity>
+
               <TouchableOpacity
                 style={[
                   styles.button,
@@ -139,64 +145,71 @@ const CreationPost = () => {
                 <Text style={[styles.buttonText, selectedButton === 'button2' && styles.textSelected]}>Image/Vidéo</Text>
               </TouchableOpacity>
             </View>
+
             <View style={styles.content}>
               {selectedButton === 'button1' && (
-                <View style={styles.contentButton1}>
-                  <View style={styles.inputpost}>
-                    <ScrollView>
-                      <TextInput
-                        style={styles.input}
-                        placeholder="Écrivez votre post ici..."
-                        value={postText}
-                        onChangeText={setPostText}
-                        multiline
-                      />
-                    </ScrollView>
+                <ScrollView style={styles.scrollView}>
+                  <View style={styles.contentButton1}>
+                    <View style={styles.inputpost}>
+                      <ScrollView>
+                        <TextInput
+                          style={styles.input}
+                          placeholder="Écrivez votre post ici..."
+                          value={postText}
+                          onChangeText={setPostText}
+                          multiline />
+                      </ScrollView>
+                    </View>
+
+                    <View style={styles.inputpost}>
+                      <ScrollView>
+                        <TextInput
+                          style={styles.inputdescription}
+                          placeholder="Description de votre post ici ..."
+                          value={postDescription}
+                          onChangeText={setPostDescription}
+                          multiline/>
+                      </ScrollView>
+                    </View>
+                    
+                    <Button title="Post" buttonStyle={{ paddingLeft: wp(10), paddingRight: wp(10) }} onPress={handleSubmitTextPost} />
                   </View>
-                  <View style={styles.inputpost}>
-                    <ScrollView>
-                      <TextInput
-                        style={styles.inputdescription}
-                        placeholder="Description de votre post ici ..."
-                        value={postDescription}
-                        onChangeText={setPostDescription}
-                        multiline
-                      />
-                    </ScrollView>
-                  </View>
-                  <Button title="Post" buttonStyle={{ paddingLeft: wp(10), paddingRight: wp(10) }} onPress={handleSubmitTextPost} />
-                </View>
+                </ScrollView>
               )}
+
               {selectedButton === 'button2' && (
-                <View style={styles.contentButton2}>
-                  <View style={styles.inputImage}>
-                    <ScrollView>
-                        <TouchableOpacity style={styles.circle} onPress={pickImage}>
-                            {selectedImage ? (
-                                <Image source={{ uri: selectedImage.uri }} style={styles.profileImage} />
-                            ) : (
-                                <Image source={require('../../assets/images/image par defaut.png')} style={styles.imagedefaut}/>
-                            )}
-                        </TouchableOpacity>
-                      
-                    </ScrollView>
+                <ScrollView style={styles.scrollView}>
+                  <View style={styles.contentButton2}>
+                    <View style={styles.inputImage}>
+                      <ScrollView>
+                          <TouchableOpacity style={styles.circle} onPress={pickImage}>
+                              {selectedImage ? (
+                                  <Image source={{ uri: selectedImage.uri }} style={styles.profileImage} />
+                              ) : (
+                                  <Image source={require('../../assets/images/image par defaut.png')} style={styles.imagedefaut}/>
+                              )}
+                          </TouchableOpacity>
+                      </ScrollView>
+                    </View>
+
+                    <View style={styles.inputpost}>
+                      <ScrollView>
+                        <TextInput
+                          style={styles.inputdescription}
+                          placeholder="Description de votre post ici ..."
+                          value={postDescription}
+                          onChangeText={setPostDescription}
+                          multiline/>
+                      </ScrollView>
+                    </View>
+
+                    <Button title="Post" buttonStyle={{ paddingLeft: wp(10), paddingRight: wp(10) }} onPress={handleSubmitMediaPost} />
                   </View>
-                  <View style={styles.inputpost}>
-                    <ScrollView>
-                      <TextInput
-                        style={styles.inputdescription}
-                        placeholder="Description de votre post ici ..."
-                        value={postDescription}
-                        onChangeText={setPostDescription}
-                        multiline
-                      />
-                    </ScrollView>
-                  </View>
-                  <Button title="Post" buttonStyle={{ paddingLeft: wp(10), paddingRight: wp(10) }} onPress={handleSubmitMediaPost} />
-                </View>
+                </ScrollView>
               )}
+
             </View>
-          </View>
+          </View>          
           <Footer />
         </ScreenWrapper>
       </View>
@@ -207,6 +220,19 @@ const CreationPost = () => {
 export default CreationPost;
 
 const styles = StyleSheet.create({
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  headerTextContainer: {
+    flex: 1,
+  },
+  headerText: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: theme.colors.orange,
+  },
   contentButton1: {
     backgroundColor: theme.colors.whiteorange,
     padding: 20,
@@ -264,7 +290,6 @@ const styles = StyleSheet.create({
   },
   content: {
     marginTop: 20,
-    padding: 20,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',

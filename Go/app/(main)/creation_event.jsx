@@ -100,13 +100,17 @@ const creation_event = () => {
       <Header />
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.headerRow}>
+
           <BackButton onPress={() => router.push('/events')} />
-        <View style={styles.headerTextContainer}>
-            <Text style={styles.headerText}>Créer mon évènement</Text>
+
+          <View style={styles.headerTextContainer}>
+              <Text style={styles.headerText}>Créer mon évènement</Text>
           </View>
         </View>
+
         <View style={styles.formWrapper}>
           <View style={styles.form}>
+            
             <Text style={styles.label}>Nom de l'évènement</Text>
             <TextInput style={styles.input} value={name} onChangeText={setName} />
 
